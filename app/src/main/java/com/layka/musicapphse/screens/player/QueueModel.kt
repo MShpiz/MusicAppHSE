@@ -27,7 +27,6 @@ class QueueModel(
             object : Player.Listener {
                 override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                     super.onMediaItemTransition(mediaItem, reason)
-                    Log.v("PLAYER", reason.toString())
                     if (mediaItem != null && reason == 1) {
                         currentTrack.value = model.trackList.value[player.currentMediaItemIndex]
                         trackIdx = player.currentMediaItemIndex
@@ -51,7 +50,6 @@ class QueueModel(
         player.seekTo(min(currentTrack.toInt(), player.mediaItemCount), 0L)
         trackIdx = min(currentTrack.toInt(), player.mediaItemCount)
         this.currentTrack.value = trackList.value[trackIdx]
-        Log.v("QUEUE_MODEL", player.currentMediaItemIndex.toString())
         startPlayer()
         isPlaying.value = true
     }

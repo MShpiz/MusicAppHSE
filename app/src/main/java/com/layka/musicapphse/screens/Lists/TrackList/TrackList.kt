@@ -77,8 +77,6 @@ fun TrackList(
                             data.value = tmp
                         },
                         onAddToPlayList = {
-                            Log.v("ADD_TRACK", navController.toString())
-                            Log.v("ADD_TRACK", "navigating to trackPlaylist/${track.trackId}")
                             navController?.navigate("trackPlaylist/${track.trackId}")
                                 ?: Log.v("ADD_TRACK", "cant navigate to ${track.trackId}")
                         },
