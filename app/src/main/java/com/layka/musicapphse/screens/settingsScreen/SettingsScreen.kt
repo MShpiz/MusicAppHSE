@@ -1,10 +1,13 @@
 package com.layka.musicapphse.screens.settingsScreen
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -33,9 +36,11 @@ fun SettingsScreen(
     val showEmailForm = remember { mutableStateOf(false) }
     val showUsernameForm = remember { mutableStateOf(false) }
     val gotData = remember { mutableStateOf(false) }
+    val offlineOn = remember { mutableStateOf(false) }
     if (!gotData.value) {
         gotData.value = true
         viewModel.getData(newEmail, newUsername)
+        viewModel.getCurrentMode(offlineOn)
     }
 
 
@@ -54,6 +59,27 @@ fun SettingsScreen(
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
+
+
+            Row(modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(vertical = 10.dp)
+                .wrapContentWidth(Alignment.CenterHorizontally)) {
+
+                Text(
+                    text = stringResource(id = R.string.turn_on_offline),
+                    modifier = Modifier
+                        .padding(vertical = 10.dp, horizontal = 5.dp)
+                )
+                Switch(
+                    checked = offlineOn.value,
+                    onCheckedChange = {
+                        viewModel.changeCurrentMode(it)
+                        offlineOn.value = it
+                    },
+
+                    )
+            }
             Button(
                 onClick = { showEmailForm.value = true },
                 modifier = Modifier
@@ -91,7 +117,8 @@ fun SettingsScreen(
                     onValueChange = { newUsername.value = it },
                     label = { Text(stringResource(id = R.string.username)) },
                     maxLines = 10,
-                    modifier = Modifier.padding(vertical = 2.dp, horizontal = 1.dp)
+                    modifier = Modifier
+                        .padding(vertical = 2.dp, horizontal = 1.dp)
                         .align(Alignment.CenterHorizontally)
                         .fillMaxWidth(0.75f)
                 )
@@ -100,15 +127,16 @@ fun SettingsScreen(
             if (showEmailForm.value || showUsernameForm.value) {
                 Button(
                     onClick = {
-                    viewModel.updateProfile(
-                        username = newUsername.value,
-                        email = newEmail.value
-                    )
-                },
+                        viewModel.updateProfile(
+                            username = newUsername.value,
+                            email = newEmail.value
+                        )
+                    },
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(vertical = 10.dp)
-                        .fillMaxWidth(0.75f)) {
+                        .fillMaxWidth(0.75f)
+                ) {
                     Text(text = "Update")
                 }
             }

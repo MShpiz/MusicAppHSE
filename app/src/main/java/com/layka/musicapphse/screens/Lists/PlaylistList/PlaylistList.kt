@@ -1,5 +1,6 @@
 package com.layka.musicapphse.screens.Lists.PlaylistList
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -14,8 +15,8 @@ fun PlaylistList(
     showCheckBox: Boolean = false,
     onCheckBoxChecked: (id: Int, check: Boolean) -> Unit = { id, check -> }
 ) {
-    LazyColumn(modifier = Modifier.fillMaxWidth()) {
-        itemsIndexed(playLists) { idx, playlist ->
+    Column(modifier = Modifier.fillMaxWidth()) {
+        playLists.forEachIndexed  { idx, playlist ->
             PlaylistItem(
                 playlist,
                 { navController.navigate("playlist/${playlist.id}") },

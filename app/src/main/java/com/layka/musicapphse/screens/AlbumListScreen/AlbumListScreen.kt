@@ -57,8 +57,3 @@ fun AlbumListScreen(
     }
 }
 
-@Preview
-@Composable
-fun AlbumListScreenPreview() {
-
-}

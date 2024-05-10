@@ -48,8 +48,8 @@ fun ArtistScreen(
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-    val headerHeight = 450.dp
-    val modalBottomSheetHeight = screenHeight - headerHeight
+    val headerHeight = 500.dp
+    val modalBottomSheetHeight = screenHeight - headerHeight + 100.dp
 
     val scaffoldState = rememberBottomSheetScaffoldState()
     val scrollState = rememberScrollState()
@@ -75,7 +75,7 @@ fun ArtistScreen(
         BottomSheetScaffold(
             scaffoldState = scaffoldState,
             sheetPeekHeight = modalBottomSheetHeight,
-            sheetSwipeEnabled = scrollState.value == 0, // TODO("fix scroll")
+            sheetSwipeEnabled = scrollState.value == 0,
             sheetDragHandle = null,
             sheetContent = {
                 Box(Modifier.height(screenHeight)) {
@@ -97,9 +97,9 @@ fun ArtistScreen(
                     cover.value = viewModel.artistData.get(0).albumCover
                 }
                 ArtistHeader(
-                    artistName,
-                    headerHeight,
-                    cover.value,
+                    name = artistName,
+                    height = headerHeight,
+                    image = cover.value,
                     headers = viewModel.headers.value
                 )
             }
@@ -122,20 +122,19 @@ private fun ArtistHeader(name: String, height: Dp, image: String?, headers: Netw
                 .memoryCachePolicy(CachePolicy.ENABLED)
                 .build(),
             contentDescription = name,
-            placeholder = painterResource(R.drawable.ic_launcher_background), // TODO("заменить дефолтную картинку")
-            error = painterResource(id = R.drawable.ic_launcher_background),
+            placeholder = painterResource(R.drawable.profile_picture),
+            error = painterResource(id = R.drawable.profile_picture),
             modifier = Modifier
                 .padding(top = 7.dp)
                 .align(Alignment.TopCenter)
                 .clip(CircleShape)
-                .height(300.dp)
+                .height(200.dp)
         )
         Text(
             text = name,
             fontSize = 30.sp,
             style = TextStyle(color = Color.Gray),
             modifier = Modifier
-                .padding(bottom = 20.dp)
                 .align(Alignment.BottomCenter)
         )
     }

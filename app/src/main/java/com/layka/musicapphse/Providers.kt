@@ -7,15 +7,17 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DataSpec
 import androidx.media3.datasource.DefaultDataSourceFactory
-import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.room.Room
 import com.layka.musicapphse.screens.player.QueueModel
 import com.layka.musicapphse.services.AuthApi
 import com.layka.musicapphse.services.TokenManager
-import com.layka.musicapphse.storage.LocalRepository
+import com.layka.musicapphse.storage.localRepo.LocalRepository
 import com.layka.musicapphse.storage.httpRepo.MusicApi
+import com.layka.musicapphse.storage.localRepo.MusicDataBase
+import com.layka.musicapphse.storage.localRepo.MusicDb
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -97,13 +99,18 @@ class Providers {
 
     @Provides
     @Singleton
-    fun provideLocalRepo(): LocalRepository {
-        return LocalRepository()
+    fun provideQueueModel(@ApplicationContext context: Context): QueueModel {
+        return QueueModel(provideExoPlayer(context))
     }
 
     @Provides
     @Singleton
-    fun provideQueueModel(@ApplicationContext context: Context): QueueModel {
-        return QueueModel(provideExoPlayer(context))
+    fun provideDatabase(@ApplicationContext context: Context) : MusicDb {
+        return Room.databaseBuilder(
+            context,
+            MusicDataBase::class.java, "musicDb"
+        )
+            .allowMainThreadQueries()
+            .build()
     }
 }

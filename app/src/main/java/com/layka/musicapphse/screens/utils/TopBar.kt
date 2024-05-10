@@ -49,7 +49,6 @@ fun TopBar(
     showBackArrow: Boolean = true,
     topBarViewModel: TopBarViewModel = hiltViewModel()
 ) {
-    val currentScreen = navController.currentBackStackEntryAsState()
     val createPlaylistPopupOn = remember { mutableStateOf(false) }
     val context = LocalContext.current
     val showToast = fun(text: String) {
@@ -70,7 +69,7 @@ fun TopBar(
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = colorResource(id = R.color.LightlyTransparentGrey),
+            containerColor = colorResource(id = R.color.grey),
             titleContentColor = MaterialTheme.colorScheme.primary,
         ),
         title = {

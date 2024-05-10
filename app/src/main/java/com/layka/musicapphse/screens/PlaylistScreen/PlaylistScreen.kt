@@ -74,9 +74,10 @@ fun PlaylistScreen(
     val isRemovingTracks = remember {
         mutableStateOf(false)
     }
-    val callBack = {isRemovingTracks.value = false}
+    val callBack = { isRemovingTracks.value = false }
     val playlistData = remember {
         playlistScreenViewModel.playlistData
+
     }
     val gotData = remember {
         mutableStateOf(false)
@@ -89,7 +90,8 @@ fun PlaylistScreen(
         mutableStateOf(false)
     }
     val playlistName = remember { mutableStateOf(playlistData.value.name) }
-    val playlistDescription = remember { mutableStateOf(playlistData.value.description) }
+    val playlistDescription =
+        remember { mutableStateOf(playlistData.value.description) }
     val header = @Composable {
         PlaylistScreenHeader(
             playlistData.value.name,
@@ -124,7 +126,12 @@ fun PlaylistScreen(
                     Icon(Icons.Default.Create, contentDescription = "Add")
                 }
             } else {
-                FloatingActionButton(onClick = { playlistScreenViewModel.removeTracksFromPlaylist(navController, callBack) }) {
+                FloatingActionButton(onClick = {
+                    playlistScreenViewModel.removeTracksFromPlaylist(
+                        navController,
+                        callBack
+                    )
+                }) {
                     Icon(Icons.Default.Done, contentDescription = "Save")
                 }
             }

@@ -51,6 +51,7 @@ fun TrackElement(
     onClicked: () -> Unit,
     onAddToPlayList: () -> Unit,
     onDeleteTrack: (id: Int) -> Unit,
+    onDownloadTrack: () -> Unit,
     showMenuBtn: Boolean = true,
     showCheckBox: Boolean = false,
     onChecked: (trackId: Int, checked: Boolean) -> Unit = { _, _ -> }
@@ -89,8 +90,8 @@ fun TrackElement(
                     .memoryCachePolicy(CachePolicy.ENABLED)
                     .build(),
                 contentDescription = name,
-                placeholder = painterResource(R.drawable.ic_launcher_background), // TODO("заменить дефолтную картинку")
-                error = painterResource(id = R.drawable.skip_next),
+                placeholder = painterResource(R.drawable.music_note),
+                error = painterResource(id = R.drawable.music_note),
                 modifier = Modifier
                     //.padding(3.dp)
                     .padding(end = 8.dp)
@@ -156,6 +157,10 @@ fun TrackElement(
                     DropdownMenuItem(
                         text = { Text(stringResource(id = R.string.delete_track)) },
                         onClick = { menuExpanded.value = false; onDeleteTrack(id) }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(id = R.string.downlodad_track)) },
+                        onClick = { menuExpanded.value = false; onDownloadTrack() }
                     )
                 }
             }

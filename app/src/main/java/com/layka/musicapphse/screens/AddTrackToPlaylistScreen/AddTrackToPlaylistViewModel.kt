@@ -45,7 +45,7 @@ class AddTrackToPlaylistViewModel @Inject constructor(val repository: Repository
         viewModelScope.launch {
             try {
                 for (playlist in playlistIds) {
-                    repository.addTrackToPlayList(playlist, trackId)
+                    repository.addTrackToPlayList(playlists.first { it.id == playlist }, trackId)
                 }
             } catch (e: IllegalAccessException) {
                 gotException = true

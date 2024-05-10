@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.layka.musicapphse.storage.RepoType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -15,6 +16,7 @@ class TokenManager(private val context: Context) {
 
     companion object {
         private val TOKEN_KEY = stringPreferencesKey("jwt_token")
+        private val REPO_TYPE_KEY = stringPreferencesKey("repo_type")
     }
 
     fun getToken(): Flow<String> {
@@ -32,6 +34,18 @@ class TokenManager(private val context: Context) {
     suspend fun deleteToken() {
         context.dataStore.edit { preferences ->
             preferences.remove(TOKEN_KEY)
+        }
+    }
+
+    fun getRepoType(): Flow<String> {
+        return context.dataStore.data.map { preferences ->
+            preferences[REPO_TYPE_KEY] ?: RepoType.HTTP.toString()
+        }
+    }
+
+    suspend fun changeRepoType(type: RepoType) {
+        context.dataStore.edit { preferences ->
+            preferences[REPO_TYPE_KEY] = type.toString()
         }
     }
 }

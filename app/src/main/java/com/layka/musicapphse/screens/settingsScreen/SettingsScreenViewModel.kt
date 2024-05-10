@@ -6,10 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.layka.musicapphse.services.TokenManager
+import com.layka.musicapphse.storage.RepoType
 import com.layka.musicapphse.storage.Repository
 import com.layka.musicapphse.storage.httpRepo.returnTypes.ProfileResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -42,5 +44,20 @@ class SettingsScreenViewModel @Inject constructor(
         viewModelScope.launch {
             tokenManager.deleteToken()
         }.invokeOnCompletion { navController.navigate("auth_screen") }
+    }
+
+    fun changeCurrentMode(offlineOn: Boolean) {
+        viewModelScope.launch {
+            tokenManager.changeRepoType(
+                if (offlineOn) RepoType.LOCAL
+                else RepoType.HTTP
+            )
+        }
+    }
+
+    fun getCurrentMode(offlineOn: MutableState<Boolean>) {
+        viewModelScope.launch {
+            offlineOn.value = RepoType.valueOf(tokenManager.getRepoType().first()) == RepoType.LOCAL
+        }
     }
 }
