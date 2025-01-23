@@ -1,5 +1,7 @@
 package com.layka.musicapphse.screens.AlbumListScreen
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,6 +24,7 @@ import androidx.navigation.NavController
 import com.layka.musicapphse.R
 import com.layka.musicapphse.screens.AlbumScreen.AlbumData
 import com.layka.musicapphse.screens.Lists.AlbumList.AlbumElement
+import com.layka.musicapphse.screens.Lists.AlbumList.AlbumVerticalList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,10 +52,11 @@ fun AlbumListScreen(
             )
         }
     ) { innerPadding ->
-        LazyColumn(modifier = Modifier.padding(innerPadding)) {
-            items(albums) {
-                AlbumElement(name = it.name, artistName = it.artists)
-            }
+        Box(
+            Modifier
+                .padding(innerPadding)
+                .fillMaxSize()) {
+            AlbumVerticalList(albums = albums)
         }
     }
 }
