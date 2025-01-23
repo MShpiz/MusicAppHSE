@@ -16,6 +16,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,11 +25,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastJoinToString
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
@@ -42,7 +46,6 @@ fun AlbumScreenHeader(
     albumCoverHeight: Int,
     albumName: String,
     artists: String,
-
     ) {
     Column(
         Modifier
@@ -84,7 +87,7 @@ fun AlbumScreenHeader(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AlbumScreen(albumData: AlbumData) {
+fun AlbumScreen(albumData: AlbumData, navController: NavController,) {
     val albumCoverHeight = 370
     val header = @Composable {
         AlbumScreenHeader(
@@ -101,14 +104,18 @@ fun AlbumScreen(albumData: AlbumData) {
         )
     }
 
+    val showScreenName = remember{ mutableStateOf(false) }
+
+    val onBottomSheetToggle = {showScreenName.value = !showScreenName.value}
+
     Scaffold (
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Localized description"
+                            contentDescription = stringResource(id = R.string.back)
                         )
                     }
                 },
@@ -117,7 +124,8 @@ fun AlbumScreen(albumData: AlbumData) {
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 title = {
-                    Text("Small Top App Bar")
+                    if (showScreenName.value)
+                        Text(albumData.name)
                 }
             )
         }
@@ -126,7 +134,8 @@ fun AlbumScreen(albumData: AlbumData) {
             header = header,
             body = body,
             headerHeight = albumCoverHeight,
-            padding = innerPadding
+            padding = innerPadding,
+            onBottomSheetToggle = onBottomSheetToggle
         )
     }
 
@@ -151,5 +160,5 @@ fun AlbumScreenPreview() {
             tracks, tracks, tracks, tracks, tracks, tracks, tracks, tracks, tracks, tracks
         ),
     )
-    AlbumScreen(albumData = data)
+    // AlbumScreen(albumData = data, null)
 }
