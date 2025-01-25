@@ -1,17 +1,11 @@
 package com.layka.musicapphse.screens.artistScreen
 
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -21,7 +15,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,10 +30,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -52,14 +41,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.layka.musicapphse.R
-import com.layka.musicapphse.customComposableElements.ScreenWithImageHeader.ScreenWithImageHeader
 import com.layka.musicapphse.screens.AlbumListScreen.AlbumListData
-import com.layka.musicapphse.screens.AlbumScreen.AlbumScreen
 import com.layka.musicapphse.screens.Lists.AlbumList.AlbumSquareElement
-import com.layka.musicapphse.screens.Lists.AlbumList.AlbumVerticalList
 import com.layka.musicapphse.screens.Lists.TrackList.MusicTrackData
 import com.layka.musicapphse.screens.Lists.TrackList.TrackElement
-import com.layka.musicapphse.screens.Lists.TrackList.TrackList
 import kotlin.math.min
 
 @OptIn(ExperimentalMaterial3Api::class)

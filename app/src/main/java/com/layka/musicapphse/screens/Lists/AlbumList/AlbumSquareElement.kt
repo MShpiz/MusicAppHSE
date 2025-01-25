@@ -22,7 +22,6 @@ import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.layka.musicapphse.R
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @Composable
 fun AlbumSquareElement(
