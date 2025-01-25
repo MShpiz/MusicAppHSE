@@ -32,7 +32,7 @@ fun TrackElement(
     name: String,
     artistName: List<String>,
     artistId: List<Int>,
-    duration: String,
+    duration: Int,
     cover: String? = null,
     index: Int,
     showCover: Boolean,
@@ -100,7 +100,7 @@ fun TrackElement(
             }
         }
         Text(
-            text = duration,
+            text = "${duration / 60}:${duration % 60}",
             style = TextStyle(color = Color.Gray),
             modifier = Modifier
                 .align(alignment = Alignment.CenterVertically)
@@ -121,7 +121,7 @@ fun TrackElementPreview() {
             "AAAA",
             listOf("Artist 1", "Artist 2", "Artist 3"),
             listOf(1, 2, 3),
-            "11:32",
+            85,
             index = 1,
             showCover = true,
             showArtistName = true
@@ -131,7 +131,7 @@ fun TrackElementPreview() {
             "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             listOf("Artist 1"),
             listOf(1),
-            "99:11:32",
+            101010,
             index = 2,
             showCover = false,
             showArtistName = true
@@ -141,7 +141,7 @@ fun TrackElementPreview() {
             "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             listOf("Artist 1"),
             listOf(1),
-            "11:32",
+            1323,
             index = 3,
             showCover = true,
             showArtistName = false
