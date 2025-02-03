@@ -8,14 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
@@ -28,11 +24,9 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastJoinToString
@@ -41,6 +35,7 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.layka.musicapphse.R
 import com.layka.musicapphse.screens.Lists.TrackList.MusicTrackData
+
 
 @Composable
 fun PlayerExpanded(trackData: MusicTrackData) {
@@ -51,12 +46,11 @@ fun PlayerExpanded(trackData: MusicTrackData) {
             modifier = Modifier
                 .fillMaxWidth()
                 //.height(70.dp)
-                .weight(0.5f)
+                .weight(1f)
         ) {
             Box(modifier = Modifier.weight(1.0f)) {
                 IconButton(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier.fillMaxHeight()
+                    onClick = { /*TODO*/ }, modifier = Modifier.fillMaxHeight()
                 ) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
@@ -67,8 +61,7 @@ fun PlayerExpanded(trackData: MusicTrackData) {
             }
 
             IconButton(
-                onClick = { /*TODO*/ },
-                modifier = Modifier.fillMaxHeight()
+                onClick = { /*TODO*/ }, modifier = Modifier.fillMaxHeight()
             ) {
                 Icon(
                     imageVector = Icons.Default.Menu,
@@ -87,8 +80,7 @@ fun PlayerExpanded(trackData: MusicTrackData) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data("127.0.0.1:8000") // TODO ("заменить на рабочую ссылку")
-                    .networkCachePolicy(CachePolicy.ENABLED)
-                    .memoryCachePolicy(CachePolicy.ENABLED)
+                    .networkCachePolicy(CachePolicy.ENABLED).memoryCachePolicy(CachePolicy.ENABLED)
                     .build(),
                 contentDescription = trackData.trackName,
                 placeholder = painterResource(R.drawable.ic_launcher_background), // TODO("заменить дефолтную картинку")
@@ -108,6 +100,7 @@ fun PlayerExpanded(trackData: MusicTrackData) {
                     modifier = Modifier.padding(start = 20.dp)
                 )
             }
+
             TextButton(onClick = { /*TODO*/ }) {
                 Text(
                     text = trackData.artists.fastJoinToString { it.second },
@@ -152,8 +145,7 @@ fun PlayerExpanded(trackData: MusicTrackData) {
 
         ) {
             IconButton(
-                onClick = { /*TODO*/ },
-                modifier = Modifier
+                onClick = { /*TODO*/ }, modifier = Modifier
                     .weight(1.0f)
                     .fillMaxHeight()
             ) {
@@ -164,8 +156,7 @@ fun PlayerExpanded(trackData: MusicTrackData) {
                 )
             }
             IconButton(
-                onClick = { /*TODO*/ },
-                modifier = Modifier.fillMaxHeight()
+                onClick = { /*TODO*/ }, modifier = Modifier.fillMaxHeight()
             ) {
                 Icon(
                     imageVector = Icons.Filled.PlayArrow,
@@ -205,9 +196,3 @@ fun PlayerExpanded(trackData: MusicTrackData) {
     }
 }
 
-@Preview
-@Composable
-fun PlayerPreview() {
-    val trackData = MusicTrackData(1, "aaaa", listOf(Pair(1, "bbbb")), 50)
-    PlayerExpanded(trackData = trackData)
-}
