@@ -1,6 +1,27 @@
 <resources>
     <string name="app_name">MusicAppHSE</string>
     <string name="back">Back</string>
-    <string name="all_tracks">See all tracks</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="all_tracks">All tracks</string>
+    <string name="see_all_tracks">See all tracks</string>
+    <string name="all_playlists">See all playlists</string>
+    <string name="all_artists">See all artists</string>
     <string name="all_albums">See all albums</string>
+    <string name="email">e-mail</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="create_playlist">Create playlist</string>
+    <string name="update_playlist">Update playlist</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="update">Update</string>
+    <string name="delete_track">Delete track</string>
+    <string name="add_to_playlist">Add to playlist</string>
+    <string name="no_tracks">Oops, there`re no tracks (or internet)</string>
+    <string name="search">Search</string>
 </resources>

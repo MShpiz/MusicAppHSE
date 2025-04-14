@@ -1,52 +1,75 @@
 package com.layka.musicapphse.screens.player
 
-import android.util.Log
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.rememberSplineBasedDecay
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
+import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.layka.musicapphse.screens.Lists.TrackList.MusicTrackData
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.navigation.NavController
+import com.layka.musicapphse.R
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.seconds
 
 private enum class Anchors {
     Collapsed,
     Expanded
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MusicPlayer(trackData: MusicTrackData) {
-
+fun MusicPlayer(playerModel: PlayerModel = hiltViewModel(), navController: NavController) {
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val heightCollapsed = remember { mutableStateOf(0.dp) } //in dp
     val configuration = LocalConfiguration.current
     val density = LocalDensity.current
     val screenHeight = configuration.screenHeightDp.dp
+    val coroutineScope = rememberCoroutineScope()
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+    val backDispatcher = checkNotNull(LocalOnBackPressedDispatcherOwner.current) {
+        "No OnBackPressedDispatcherOwner was provided via LocalOnBackPressedDispatcherOwner"
+    }.onBackPressedDispatcher
+    val getHeaders = remember {
+        mutableStateOf(false)
+    }
+    if (!getHeaders.value) {
+        getHeaders.value = true
+        playerModel.getHeaders()
+    }
     val dragState = remember {
         AnchoredDraggableState(
             initialValue = Anchors.Collapsed,
             anchors = DraggableAnchors {
                 Anchors.Expanded at 0f
-                Anchors.Collapsed at with(density){(screenHeight - 100.dp).toPx()}.toFloat()
+                Anchors.Collapsed at with(density) { (screenHeight - 140.dp).toPx() }.toFloat()
             },
             positionalThreshold = { d -> d * 0.3f },
             velocityThreshold = { Float.POSITIVE_INFINITY },
@@ -55,49 +78,81 @@ fun MusicPlayer(trackData: MusicTrackData) {
         )
     }
 
-    var visible = remember { mutableStateOf(true) }
-
-    Box(
-        Modifier
-            .fillMaxSize()
-            .offset {
-                IntOffset(
-                    x = 0,
-                    y = dragState
-                        .requireOffset()
-                        .roundToInt(),
-                )
-            }
-            .anchoredDraggable(dragState, Orientation.Vertical)
-
-    ) {
-        AnimatedVisibility(
-            visible = (dragState.targetValue == Anchors.Collapsed),
-            enter = fadeIn(),
-            exit = fadeOut()
-        )
-        {
-            CollapsedState(trackData, Modifier.onSizeChanged {
-                heightCollapsed.value = it.height.dp
-                Log.v("THEHeight", "${heightCollapsed.value}")
-                Log.v("THEHeight", "${with(density){(screenHeight - heightCollapsed.value).toPx()}} ${with(density){screenHeight.toPx()}}")
-            })
-        }
-
-
-        AnimatedVisibility(
-            visible = (dragState.targetValue != Anchors.Collapsed),
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            PlayerExpanded(trackData = trackData)
+    val expandPlayer = fun() {
+        coroutineScope.launch {
+            dragState.animateTo(Anchors.Expanded)
         }
     }
-}
 
-@Preview
-@Composable
-fun PlayerPreview() {
-    val trackData = MusicTrackData(1, "aaaa", listOf(Pair(1, "bbbb")), 50)
-    MusicPlayer(trackData = trackData)
+    val collapsePlayer = fun() {
+        coroutineScope.launch {
+            dragState.animateTo(Anchors.Collapsed)
+        }
+    }
+    val backCallback = remember {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (dragState.currentValue == Anchors.Expanded)
+                    collapsePlayer()
+                else
+                    navController.popBackStack()
+            }
+        }
+    }
+    backDispatcher.addCallback(lifecycleOwner, backCallback)
+
+    val playerPosition = remember { mutableStateOf(0f) }
+    if (playerModel.queueModel.isPlaying.value) {
+        LaunchedEffect(Unit) {
+            while (true) {
+                playerPosition.value = playerModel.queueModel.getCurrPosition().toFloat()
+                delay(1.seconds / 30)
+            }
+        }
+    }
+
+     if (playerModel.queueModel.currentTrack.value != null) {
+
+        Box(
+            Modifier
+                .offset {
+                    IntOffset(
+                        x = 0,
+                        y = dragState
+                            .requireOffset()
+                            .roundToInt(),
+                    )
+                }
+                .anchoredDraggable(dragState, Orientation.Vertical)
+
+        ) {
+            AnimatedVisibility(
+                visible = (dragState.targetValue == Anchors.Collapsed),
+                enter = fadeIn(),
+                exit = fadeOut(),
+                // modifier=Modifier
+            )
+            {
+                CollapsedState(
+                    playerPosition = playerPosition,
+                    onClicked = { expandPlayer() }
+                )
+            }
+
+
+            AnimatedVisibility(
+                visible = (dragState.targetValue != Anchors.Collapsed),
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                PlayerExpanded(
+                    playerPosition = playerPosition,
+                    collapsePlayer = collapsePlayer,
+                    playerModel = playerModel,
+                    navController = navController
+                )
+            }
+        }
+
+     }
 }

@@ -1,32 +1,63 @@
 package com.layka.musicapphse.screens.MainScreen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.layka.musicapphse.R
-import com.layka.musicapphse.screens.AlbumListScreen.AlbumListData
-import com.layka.musicapphse.screens.Lists.AlbumList.AlbumVerticalList
-import com.layka.musicapphse.screens.Lists.TrackList.MusicTrackData
+import com.layka.musicapphse.screens.Lists.ArtistList.ArtistList
+import com.layka.musicapphse.screens.Lists.PlaylistList.PlaylistList
 import com.layka.musicapphse.screens.Lists.TrackList.TrackList
+import com.layka.musicapphse.screens.utils.BottomBar
+import com.layka.musicapphse.screens.utils.TopBar
 
 @Composable
-fun MainScreen(trackData: List<MusicTrackData>, albums: List<AlbumListData>) {
-    Scaffold() { innerPadding ->
+fun MainScreen(
+    navController: NavController,
+    musicDataViewModel: MainViewModel = hiltViewModel()
+) {
+    val gotTracks = remember { mutableStateOf(false) }
+    if (!gotTracks.value) {
+        Log.v("MAIN_SCREEN", gotTracks.value.toString())
+        gotTracks.value = true
+        musicDataViewModel.getAllData(navController)
+        Log.v("MAIN_SCREEN", gotTracks.value.toString())
+    }
+    Scaffold(topBar = {
+        TopBar(
+            navController = navController,
+            showScreenName = remember { mutableStateOf(false) },
+            showBackArrow = false
+        )
+    },
+        bottomBar = { BottomBar(navController = navController) }) { innerPadding ->
         Column(Modifier.padding(innerPadding)) {
-            TextButton(onClick = { /*TODO*/ }) {
-                Text(text= stringResource(id =  R.string.all_tracks))
+            TextButton(onClick = { navController.navigate("all_tracks_screen") }) {
+                Text(text = stringResource(id = R.string.all_tracks))
             }
-            TrackList(trackData = trackData, showCover = true)
-            TextButton(onClick = { /*TODO*/ }) {
-                Text(text = stringResource(id = R.string.all_albums))
+            TrackList(
+                trackData = musicDataViewModel.trackData,
+                showCover = true,
+                navController = navController,
+                showArtistName = true
+            )
+            TextButton(onClick = { navController.navigate("all_playlists_screen") }) {
+                Text(text = stringResource(id = R.string.all_playlists))
             }
-            AlbumVerticalList(albums = albums)
+            PlaylistList(musicDataViewModel.playListData, navController)
+            TextButton(onClick = { navController.navigate("all_artists_screen") }) {
+                Text(text = stringResource(id = R.string.all_artists))
+            }
+            ArtistList(artistData = musicDataViewModel.artistData, navController)
         }
     }
 }

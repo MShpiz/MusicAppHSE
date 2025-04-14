@@ -1,6 +1,7 @@
 package com.layka.musicapphse.screens.player
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,8 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -20,33 +19,38 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.fastJoinToString
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
+import coil3.network.httpHeaders
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.layka.musicapphse.R
-import com.layka.musicapphse.screens.Lists.TrackList.MusicTrackData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CollapsedState(trackData: MusicTrackData, modifier: Modifier) {
-    val sliderPosition = remember { mutableFloatStateOf(0f) }
-    Column (Modifier.then(modifier)) {
+fun CollapsedState(
+    onClicked: () -> Unit,
+    playerModel: PlayerModel = hiltViewModel(),
+    playerPosition: MutableState<Float>
+) {
+    Column {
         Slider(
-            value = sliderPosition.floatValue,
-            onValueChange = { sliderPosition.floatValue = it },
-            valueRange = 0f..trackData.duration.toFloat(),
+            value = playerPosition.value / 1000,
+            onValueChange = { playerModel.queueModel.changePosition((it * 1000).toLong()) },
+            valueRange = 0f..(playerModel.queueModel.currentTrack.value?.duration?.toFloat() ?: 0f),
             enabled = false,
             track = { currSliderState ->
                 val fraction = remember {
@@ -59,14 +63,16 @@ fun CollapsedState(trackData: MusicTrackData, modifier: Modifier) {
                     Box(
                         Modifier
                             .fillMaxWidth(fraction.value)
-                            .align(Alignment.CenterStart)
+                            .background(colorResource(id = R.color.white))
+                            .align(Alignment.TopStart)
                             .height(6.dp)
                             .background(colorResource(id = R.color.purple_200), CircleShape)
                     )
                     Box(
                         Modifier
                             .fillMaxWidth(1f - fraction.value)
-                            .align(Alignment.CenterEnd)
+                            .background(colorResource(id = R.color.white))
+                            .align(Alignment.TopEnd)
                             .height(6.dp)
                             .background(
                                 colorResource(id = R.color.LightlyTransparentGrey),
@@ -77,17 +83,24 @@ fun CollapsedState(trackData: MusicTrackData, modifier: Modifier) {
             },
             thumb = {},
             modifier = Modifier
+                .background(colorResource(id = R.color.white))
                 .fillMaxWidth(0.98f)
+                .height(5.dp)
                 .align(Alignment.CenterHorizontally)
         )
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClicked() }
+            .background(colorResource(id = R.color.white))
+            .padding(top = 23.dp, bottom = 12.dp)) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data("127.0.0.1:8000") // TODO ("заменить на рабочую ссылку")
+                    .httpHeaders(playerModel.headers.value)
+                    .data(playerModel.queueModel.currentTrack.value?.albumCover) // TODO ("заменить на рабочую ссылку")
                     .networkCachePolicy(CachePolicy.ENABLED)
                     .memoryCachePolicy(CachePolicy.ENABLED)
                     .build(),
-                contentDescription = trackData.trackName,
+                contentDescription = playerModel.queueModel.currentTrack.value?.trackName ?: "",
                 placeholder = painterResource(R.drawable.ic_launcher_background), // TODO("заменить дефолтную картинку")
                 error = painterResource(id = R.drawable.ic_launcher_background),
                 modifier = Modifier
@@ -96,41 +109,56 @@ fun CollapsedState(trackData: MusicTrackData, modifier: Modifier) {
             )
             Column {
                 Text(
-                    text = trackData.trackName,
+                    text = playerModel.queueModel.currentTrack.value?.trackName ?: "",
                     fontSize = 20.sp,
                     modifier = Modifier.padding(start = 20.dp)
                 )
                 Text(
-                    text = trackData.artists.fastJoinToString { it.second },
+                    text = playerModel.queueModel.currentTrack.value?.artists ?: "",
                     fontSize = 15.sp,
                     modifier = Modifier.padding(start = 20.dp)
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
             IconButton(
-                onClick = { /*TODO*/ }
+                onClick = {
+                    playerModel.queueModel.playPrevious()
+                }
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                    imageVector = ImageVector.vectorResource(R.drawable.skip_previous),
                     contentDescription = stringResource(id = R.string.back),
                     modifier = Modifier
                         .fillMaxHeight()
                 )
             }
             IconButton(
-                onClick = { /*TODO*/ }
+                onClick = {
+                    if (playerModel.queueModel.isPlaying.value)
+                        playerModel.queueModel.pausePlayer()
+                    else playerModel.queueModel.startPlayer()
+                }
             ) {
-                Icon(
-                    imageVector = Icons.Filled.PlayArrow,
-                    contentDescription = stringResource(id = R.string.back),
-                    modifier = Modifier.fillMaxHeight()
-                )
+                if (!playerModel.queueModel.isPlaying.value)
+                    Icon(
+                        imageVector = Icons.Filled.PlayArrow,
+                        contentDescription = stringResource(id = R.string.play),
+                        modifier = Modifier.fillMaxHeight()
+                    )
+                else
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.pause),
+                        contentDescription = stringResource(id = R.string.pause),
+                        modifier = Modifier.fillMaxHeight()
+                    )
             }
             IconButton(
-                onClick = { /*TODO*/ }
+                onClick = {
+                    playerModel.queueModel.playNext()
+                }
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    imageVector = ImageVector.vectorResource(R.drawable.skip_next),
                     contentDescription = stringResource(id = R.string.back),
                     modifier = Modifier.fillMaxHeight()
                 )

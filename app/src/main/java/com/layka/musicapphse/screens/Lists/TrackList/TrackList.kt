@@ -1,31 +1,93 @@
 package com.layka.musicapphse.screens.Lists.TrackList
 
+import android.util.Log
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.layka.musicapphse.R
 
 
 @Composable
 fun TrackList(
     trackData: List<MusicTrackData>,
     showCover: Boolean,
-    showArtistName: Boolean = false
+    showArtistName: Boolean = false,
+    navController: NavController?,
+    showMenuBtn: Boolean = true,
+    showCheckbox: Boolean = false,
+    onChecked: (trackId: Int, checked: Boolean) -> Unit = { _, _ -> },
+    viewModel: TrackListViewModel = hiltViewModel()
 ) {
-    LazyColumn (Modifier.fillMaxWidth()){
-        itemsIndexed(trackData)  { idx, track ->
-
-            TrackElement(
-                id = track.trackId,
-                name = track.trackName,
-                artistName = track.artists.map { it.second },
-                artistId = track.artists.map { it.first },
-                duration = track.duration,
-                index = idx + 1, // тут нужен номер трека
-                showCover = showCover,
-                showArtistName = (showArtistName || track.artists.size > 1) // список исполнителей будет показан если это необходимо или если у трека болше чем 1 исполнитель
+    val data = remember { mutableStateOf(trackData) }
+    val gotHeaders = remember {
+        mutableStateOf(false)
+    }
+    if (!gotHeaders.value) {
+        gotHeaders.value = true
+        viewModel.getHeaders()
+    }
+    Box(
+        Modifier
+            .fillMaxWidth()
+    ) {
+        if (trackData.isEmpty()) {
+            Text(
+                text = stringResource(id = R.string.no_tracks),
+                modifier = Modifier
+                    .padding(10.dp)
+                    .align(Alignment.Center)
             )
+        } else {
+
+            LazyColumn(Modifier.wrapContentHeight()) {
+                itemsIndexed(data.value) { idx, track ->
+                    TrackElement(
+                        id = track.trackId,
+                        name = track.trackName,
+                        artistName = track.artists,
+                        duration = track.duration,
+                        index = idx + 1, // тут нужен номер трека
+                        showCover = showCover,
+                        cover = track.albumCover,
+                        headers = viewModel.headers.value,
+                        showArtistName = showArtistName,
+                        onClicked = fun() {
+                            viewModel.queueModel.setQueue(
+                                trackData,
+                                idx.toUInt()
+                            )
+                        },
+                        onDeleteTrack = { id ->
+                            viewModel.deleteTrack(id, navController!!)
+                            val tmp = data.value.toMutableList()
+                            tmp.removeAt(idx)
+                            data.value = tmp
+                        },
+                        onAddToPlayList = {
+                            Log.v("ADD_TRACK", navController.toString())
+                            Log.v("ADD_TRACK", "navigating to trackPlaylist/${track.trackId}")
+                            navController?.navigate("trackPlaylist/${track.trackId}")
+                                ?: Log.v("ADD_TRACK", "cant navigate to ${track.trackId}")
+                        },
+                        showMenuBtn = showMenuBtn,
+                        showCheckBox = showCheckbox,
+                        onChecked = onChecked
+                    )
+                }
+            }
         }
     }
 }
