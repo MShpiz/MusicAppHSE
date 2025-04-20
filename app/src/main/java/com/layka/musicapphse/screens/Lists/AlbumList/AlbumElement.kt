@@ -37,7 +37,6 @@ fun AlbumElement(
     val bgImageColor = colorResource(R.color.LightlyTransparentGrey)
     Row(modifier = Modifier.fillMaxWidth())
     {
-
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data("127.0.0.1:8000")
@@ -85,7 +84,13 @@ fun AlbumElement(
 fun AlbumElementPreview() {
     Column {
         AlbumElement("AAAA", listOf("Artist 1", "Artist 2", "Artist 3"))
-        AlbumElement("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", listOf("Artist 1"))
-        AlbumElement("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", listOf("Artist 1"))
+        AlbumElement(
+            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            listOf("Artist 1")
+        )
+        AlbumElement(
+            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            listOf("Artist 1")
+        )
     }
 }

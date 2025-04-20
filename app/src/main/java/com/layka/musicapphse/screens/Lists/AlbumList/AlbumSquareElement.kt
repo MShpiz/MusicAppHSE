@@ -30,7 +30,7 @@ fun AlbumSquareElement(
     cover: ImageRequest? = null
     //navController: NavController,
 ) {
-    Column (
+    Column(
         Modifier
             .clickable { TODO() }
             .padding(start = 30.dp, bottom = 10.dp)
@@ -53,14 +53,14 @@ fun AlbumSquareElement(
                 .clip(RoundedCornerShape(10.dp))
         )
         Text(
-            text=name,
+            text = name,
             fontSize = 18.sp,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             modifier = Modifier.align(Alignment.Start)
         )
         Text(
-            text = artistName.fastJoinToString { it } ,
+            text = artistName.fastJoinToString { it },
             style = TextStyle(color = Color.Gray),
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,

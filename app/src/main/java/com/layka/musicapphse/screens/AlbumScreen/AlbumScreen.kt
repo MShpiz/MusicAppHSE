@@ -30,7 +30,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.fastJoinToString
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
@@ -46,7 +45,7 @@ fun AlbumScreenHeader(
     albumCoverHeight: Int,
     albumName: String,
     artists: String,
-    ) {
+) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -87,28 +86,29 @@ fun AlbumScreenHeader(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AlbumScreen(albumData: AlbumData, navController: NavController,) {
+fun AlbumScreen(albumData: AlbumData, navController: NavController) {
     val albumCoverHeight = 370
     val header = @Composable {
         AlbumScreenHeader(
             albumCoverHeight,
             albumData.name,
-            albumData.artists.fastJoinToString { it.second }
+            albumData.artist
         )
     }
     val body = @Composable {
         TrackList(
             trackData = albumData.tracks,
             showCover = false,
-            showArtistName = false
+            showArtistName = false,
+            navController = navController
         )
     }
 
-    val showScreenName = remember{ mutableStateOf(false) }
+    val showScreenName = remember { mutableStateOf(false) }
 
-    val onBottomSheetToggle = {showScreenName.value = !showScreenName.value}
+    val onBottomSheetToggle = { showScreenName.value = !showScreenName.value }
 
-    Scaffold (
+    Scaffold(
         topBar = {
             TopAppBar(
                 navigationIcon = {
@@ -134,8 +134,7 @@ fun AlbumScreen(albumData: AlbumData, navController: NavController,) {
             header = header,
             body = body,
             headerHeight = albumCoverHeight,
-            padding = innerPadding,
-            onBottomSheetToggle = onBottomSheetToggle
+            padding = innerPadding
         )
     }
 
@@ -148,13 +147,14 @@ fun AlbumScreenPreview() {
     val tracks = MusicTrackData(
         1,
         "Aaaaaaa Aaaaa",
-        listOf(Pair(1, "Artist 1")),
-        100
+        "Artist 1",
+        100,
+        ""
     )
     val data = AlbumData(
         1,
         "Крик души",
-        listOf(Pair(1, "Типикал вышкинец")),
+        "Типикал вышкинец",
         listOf(
             tracks, tracks, tracks, tracks, tracks, tracks, tracks, tracks, tracks, tracks,
             tracks, tracks, tracks, tracks, tracks, tracks, tracks, tracks, tracks, tracks
