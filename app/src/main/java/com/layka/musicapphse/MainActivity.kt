@@ -74,18 +74,45 @@ class MainActivity : ComponentActivity() {
                             PlaylistScreen(playlistId = id, navController = navController)
                         }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+                        composable("trackPlaylist/{id}", arguments = listOf(navArgument("id") {
+                            type = NavType.IntType
+                            nullable = false
+                        })) {
+                            val id = remember {
+                                it.arguments?.getInt("id") ?: -1
+                            }
+                            AddTrackToPlaylistScreen(
+                                trackId = id,
+                                navController = navController
+                            )
+                        }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MusicAppHSETheme {
-        Greeting("Android")
+                        composable("artist/{name}", arguments = listOf(navArgument("name") {
+                            type = NavType.StringType
+                            nullable = false
+                        })) {
+                            val name = remember {
+                                it.arguments?.getString("name") ?: ""
+                            }
+                            ArtistScreen(artistName = name, navController = navController)
+                        }
+
+                        composable("search_screen") {
+                            SearchScreen(navController = navController)
+                        }
+                        composable("profile_screen") {
+                            ProfileScreen(navController = navController)
+                        }
+                        composable("settings_screen") {
+                            SettingsScreen(navController = navController)
+                        }
+                    }
+                    if (navController.currentBackStackEntryAsState().value.toString() != "auth_screen") {
+                        MusicPlayer(navController = navController)
+                    }
+                }
+
+            }
+        }
     }
 }

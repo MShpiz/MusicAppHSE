@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import okhttp3.internal.notify
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -22,8 +21,7 @@ fun ScreenWithImageHeader(
     header: @Composable () -> Unit,
     body: @Composable () -> Unit,
     headerHeight: Int = 370,
-    padding: PaddingValues,
-    onBottomSheetToggle: () -> Unit
+    padding: PaddingValues
 ) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -35,9 +33,9 @@ fun ScreenWithImageHeader(
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetPeekHeight = modalBottomSheetHeight,
-        sheetSwipeEnabled = scrollState.value == 0, // TODO("fix scroll")
+        sheetSwipeEnabled = scrollState.value == 0,
         sheetDragHandle = null,
-        sheetContent = { Box(Modifier.height(screenHeight - padding.calculateTopPadding())){body() }},
+        sheetContent = { Box(Modifier.height(screenHeight - padding.calculateTopPadding())) { body() } },
         modifier = Modifier.padding(padding)
     ) { bottomSheetInnerPadding ->
         Box(
