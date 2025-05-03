@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
+    testImplementation(libs.testng)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -94,4 +95,15 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.dagger.hilt.compiler)
+
+    // Required -- JUnit 4 framework
+    testImplementation("junit:junit:4.12")
+    // Optional -- Robolectric environment
+    testImplementation("androidx.test:core:1.6.1")
+    // Optional -- Mockito framework
+    testImplementation("org.mockito:mockito-core:5.15.2")
+    // Optional -- mockito-kotlin
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+    // Optional -- Mockk framework
+    testImplementation("io.mockk:mockk:1.13.14")
 }
