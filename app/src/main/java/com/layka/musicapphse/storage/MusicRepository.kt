@@ -9,7 +9,6 @@ import com.layka.musicapphse.storage.httpRepo.returnTypes.ProfileResponse
 import com.layka.musicapphse.storage.httpRepo.returnTypes.TrackPlays
 
 interface MusicRepository {
-    suspend fun getTrackInfo(trackId: Int)
     suspend fun getAlbum(albumName: String)
     suspend fun getAllTracks(): List<MusicTrackData>
 
@@ -19,7 +18,7 @@ interface MusicRepository {
     suspend fun createPlayList(name: String, description: String): Boolean
     suspend fun updatePlayList(name: String, description: String, id: Int): Boolean
     suspend fun deletePlayList(playlistId: Int): Boolean
-    suspend fun addTrackToPlayList(playlistId: Int, trackId: Int)
+    suspend fun addTrackToPlayList(playlist: ShortPlaylistData, trackId: Int)
     suspend fun deleteTrackFromPlayList(playlistId: Int, trackId: Int)
     suspend fun getUserPlaylists(): List<ShortPlaylistData>
 

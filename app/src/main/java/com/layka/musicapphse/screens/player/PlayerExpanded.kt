@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Menu
@@ -122,6 +123,7 @@ private fun PlayerView(
     playerPosition: MutableState<Float>,
     navController: NavController
 ) {
+    val context = LocalContext.current
     val interactionSource = remember {
         MutableInteractionSource()
     }
@@ -148,8 +150,8 @@ private fun PlayerView(
                     .memoryCachePolicy(CachePolicy.ENABLED)
                     .build(),
                 contentDescription = playerModel.queueModel.currentTrack.value?.trackName ?: "",
-                placeholder = painterResource(R.drawable.ic_launcher_background), // TODO("заменить дефолтную картинку")
-                error = painterResource(id = R.drawable.ic_launcher_background),
+                placeholder = painterResource(R.drawable.music_note), // TODO("заменить дефолтную картинку")
+                error = painterResource(id = R.drawable.music_note),
                 modifier = Modifier
                     .padding()
                     .align(Alignment.Center)
@@ -328,9 +330,13 @@ private fun PlayerView(
 
 @Composable
 fun MusicQueue(playerModel: PlayerModel) {
-    TrackList(
-        trackData = playerModel.queueModel.trackList.value, showCover = false,
-        navController = null, showMenuBtn = false, showArtistName = true
-    )
+    LazyColumn {
+        item {
+            TrackList(
+                trackData = playerModel.queueModel.trackList.value, showCover = false,
+                navController = null, showMenuBtn = false, showArtistName = true
+            )
+        }
+    }
 }
 

@@ -11,8 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.layka.musicapphse.R
 import com.layka.musicapphse.screens.Lists.PlaylistList.PlaylistList
 import com.layka.musicapphse.screens.utils.BottomBar
 import com.layka.musicapphse.screens.utils.TopBar
@@ -34,7 +36,8 @@ fun AddTrackToPlaylistScreen(
         topBar = {
             TopBar(
                 navController = navController,
-                showScreenName = remember { mutableStateOf(false) })
+                showScreenName = remember { mutableStateOf(true) },
+                screenName = stringResource(id = R.string.add_track_to_playlist))
         },
         bottomBar = { BottomBar(navController = navController) },
         floatingActionButton = {

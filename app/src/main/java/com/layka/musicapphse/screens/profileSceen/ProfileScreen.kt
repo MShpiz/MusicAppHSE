@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,7 +27,8 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.layka.musicapphse.R
 import com.layka.musicapphse.screens.Lists.ArtistList.ArtistElement
-import com.layka.musicapphse.screens.Lists.TrackList.TrackElement
+import com.layka.musicapphse.screens.Lists.ArtistList.ArtistList
+import com.layka.musicapphse.screens.Lists.TrackList.TrackList
 import com.layka.musicapphse.screens.utils.BottomBar
 import com.layka.musicapphse.screens.utils.TopBar
 
@@ -57,6 +57,7 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
         LazyColumn(
             Modifier
                 .padding(innerPadding)
+                .padding(bottom=100.dp)
                 .fillMaxWidth()
         ) {
             item {
@@ -89,29 +90,16 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
                 Text(
                     text = "Recently listened tracks:",
                     fontSize = 20.sp,
-                    modifier = Modifier.padding(bottom = 5.dp)
+                    modifier = Modifier.padding(bottom = 5.dp).padding(horizontal = 20.dp)
                 )
             }
-            itemsIndexed(viewModel.recentTracks) { idx, item ->
-                TrackElement(
-                    id = item.trackId,
-                    name = item.trackName,
-                    artistName = item.artists,
-                    duration = item.duration,
-                    cover = item.albumCover,
-                    index = idx + 1,
-                    showCover = true,
-                    showArtistName = true,
-                    onClicked = {
-                        viewModel.queueModel.setQueue(
-                            viewModel.recentTracks,
-                            idx.toUInt()
-                        )
-                    },
-                    onAddToPlayList = { },
-                    onDeleteTrack = { },
+            item {
+                TrackList(
+                    trackData = viewModel.recentTracks,
+                    showCover = false,
+                    navController = navController,
                     showMenuBtn = false,
-                    showCheckBox = false
+                    showArtistName = true
                 )
             }
             item {
@@ -126,8 +114,8 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
                     modifier = Modifier.padding(horizontal = 10.dp)
                 )
             }
-            items(viewModel.recentArtists) { item ->
-                ArtistElement(data = item) { navController.navigate("artist_screen/${item.name}") }
+            item {
+                ArtistList(artistData = viewModel.recentArtists, navController = navController)
             }
         }
 

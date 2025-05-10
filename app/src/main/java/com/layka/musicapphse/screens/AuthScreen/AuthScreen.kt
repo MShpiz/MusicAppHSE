@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -16,6 +18,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.wear.compose.material.Button
@@ -61,7 +66,7 @@ fun AuthScreen(navController: NavHostController, authViewModel: AuthViewModel = 
     Box(Modifier.fillMaxSize()) {
         Column(
             Modifier
-                .fillMaxWidth(0.5f)
+                .fillMaxWidth(0.75f)
                 .align(Alignment.Center)
         ) {
             if (!needRegister.value) {
@@ -69,13 +74,16 @@ fun AuthScreen(navController: NavHostController, authViewModel: AuthViewModel = 
                     value = loginEmail.value,
                     onValueChange = { value -> loginEmail.value = value },
                     label = { androidx.compose.material3.Text(stringResource(id = R.string.email)) },
-                    modifier = Modifier.fillMaxWidth()
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    modifier = Modifier.padding(10.dp).fillMaxWidth()
                 )
                 TextField(
                     value = loginPassword.value,
                     onValueChange = { value -> loginPassword.value = value },
                     label = { androidx.compose.material3.Text(stringResource(id = R.string.password)) },
-                    modifier = Modifier.fillMaxWidth()
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier.fillMaxWidth().padding(10.dp)
                 )
                 Button(onClick = {
                     authViewModel.login(
@@ -83,7 +91,7 @@ fun AuthScreen(navController: NavHostController, authViewModel: AuthViewModel = 
                         loginPassword.value,
                         showToast
                     )
-                }, Modifier.fillMaxWidth()) {
+                }, Modifier.fillMaxWidth().padding(vertical = 10.dp)) {
                     Text(text = stringResource(id = R.string.login))
                 }
                 TextButton(onClick = { needRegister.value = true }, Modifier.fillMaxWidth()) {
@@ -97,20 +105,23 @@ fun AuthScreen(navController: NavHostController, authViewModel: AuthViewModel = 
                 TextField(
                     value = registerEmail.value,
                     onValueChange = { value -> registerEmail.value = value },
-                    label = { Text(stringResource(id = R.string.email)) },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { androidx.compose.material3.Text(stringResource(id = R.string.email)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp)
                 )
                 TextField(
                     value = registerPassword.value,
                     onValueChange = { value -> registerPassword.value = value },
-                    label = { Text(stringResource(id = R.string.password)) },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { androidx.compose.material3.Text(stringResource(id = R.string.password)) },
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    visualTransformation = PasswordVisualTransformation(),
                 )
                 TextField(
                     value = registerUsername.value,
                     onValueChange = { value -> registerUsername.value = value },
                     label = { androidx.compose.material3.Text(stringResource(id = R.string.username)) },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp)
                 )
                 Button(
                     onClick = {
@@ -121,7 +132,7 @@ fun AuthScreen(navController: NavHostController, authViewModel: AuthViewModel = 
                             showToast
                         )
                     },
-                    Modifier.fillMaxWidth()
+                    Modifier.fillMaxWidth().padding(vertical = 10.dp)
                 ) {
                     Text(text = stringResource(id = R.string.register))
                 }
@@ -135,7 +146,7 @@ fun AuthScreen(navController: NavHostController, authViewModel: AuthViewModel = 
         }
     }
 }
-
+//
 //@Composable
 //@Preview
 //fun AuthScreenPreview() {

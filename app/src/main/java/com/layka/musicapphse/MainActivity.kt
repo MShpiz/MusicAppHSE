@@ -14,6 +14,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.layka.musicapphse.screens.AddTrackToPlaylistScreen.AddTrackToPlaylistScreen
 import com.layka.musicapphse.screens.AlbumScreen.PlaylistScreen
 import com.layka.musicapphse.screens.AuthScreen.AuthScreen
@@ -34,6 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
 
+    @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -41,11 +45,18 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
+            val musicPermission = rememberPermissionState(
+                android.Manifest.permission.READ_MEDIA_AUDIO
+            )
+            if (!musicPermission.status.isGranted) {
+                musicPermission.launchPermissionRequest()
+            }
+
             MusicAppHSETheme {
 
                 Box(Modifier.fillMaxSize()) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "main_screen") {
+                    NavHost(navController = navController, startDestination = "playlist/1") {
                         composable("main_screen") {
                             MainScreen(
                                 navController = navController

@@ -101,8 +101,8 @@ fun CollapsedState(
                     .memoryCachePolicy(CachePolicy.ENABLED)
                     .build(),
                 contentDescription = playerModel.queueModel.currentTrack.value?.trackName ?: "",
-                placeholder = painterResource(R.drawable.ic_launcher_background), // TODO("заменить дефолтную картинку")
-                error = painterResource(id = R.drawable.ic_launcher_background),
+                placeholder = painterResource(R.drawable.music_note), // TODO("заменить дефолтную картинку")
+                error = painterResource(id = R.drawable.music_note),
                 modifier = Modifier
                     .padding(start = 10.dp, end = 10.dp)
                     .height(40.dp)

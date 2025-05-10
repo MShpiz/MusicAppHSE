@@ -51,6 +51,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    ksp{
+        arg("room.generateKotlin", "true")
+    }
 }
 
 dependencies {
@@ -96,14 +99,20 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.dagger.hilt.compiler)
 
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
     // Required -- JUnit 4 framework
-    testImplementation("junit:junit:4.12")
+    testImplementation(libs.junit.v412)
     // Optional -- Robolectric environment
-    testImplementation("androidx.test:core:1.6.1")
+    testImplementation(libs.androidx.core)
     // Optional -- Mockito framework
-    testImplementation("org.mockito:mockito-core:5.15.2")
+    testImplementation(libs.mockito.core)
     // Optional -- mockito-kotlin
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+    testImplementation(libs.mockito.kotlin)
     // Optional -- Mockk framework
-    testImplementation("io.mockk:mockk:1.13.14")
+    testImplementation(libs.mockk)
+
+    implementation(libs.accompanist.permissions)
 }

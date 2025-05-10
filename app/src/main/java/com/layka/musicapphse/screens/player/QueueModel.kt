@@ -1,11 +1,24 @@
 package com.layka.musicapphse.screens.player
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.database.Cursor
 import android.net.Uri
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
+import androidx.annotation.OptIn
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DataSpec
+import androidx.media3.datasource.RawResourceDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.LoopingMediaSource
+import androidx.media3.extractor.mp3.Mp3Extractor
 import com.layka.musicapphse.screens.Lists.TrackList.MusicTrackData
 import kotlin.math.min
 
@@ -39,7 +52,7 @@ class QueueModel(
     fun setQueue(newQueue: List<MusicTrackData>, currentTrack: UInt = 0U) {
         pausePlayer()
         if (trackList != newQueue) {
-            trackList.value = newQueue
+            trackList.value =  newQueue
             initialTrackList.clear()
             newQueue.forEach {
                 initialTrackList.add(it)
@@ -48,8 +61,14 @@ class QueueModel(
             addMediaItemsToPlayer(trackList.value)
         }
         player.seekTo(min(currentTrack.toInt(), player.mediaItemCount), 0L)
-        trackIdx = min(currentTrack.toInt(), player.mediaItemCount)
+        trackIdx = min(currentTrack.toInt(), player.mediaItemCount-1)
         this.currentTrack.value = trackList.value[trackIdx]
+
+        player.addMediaItem(
+            MediaItem.fromUri(
+                Uri.parse(Environment.getExternalStorageDirectory().toString() + "/Music/Stuff/The evil in me.mp3")),
+            )
+
         startPlayer()
         isPlaying.value = true
     }
@@ -63,7 +82,8 @@ class QueueModel(
     }
 
     private fun convertToMediaItem(data: MusicTrackData): MediaItem {
-        return MediaItem.fromUri(Uri.parse(data.uri))
+
+        return  MediaItem.fromUri(Uri.parse(data.uri))
     }
 
     fun startPlayer() {
@@ -143,53 +163,15 @@ class QueueModel(
         repeatOn.value = !repeatOn.value
     }
 
-//    @SuppressLint("Range")
-//    fun getQueue(): List<MusicTrackData> {
-//        val cursor: Cursor? = resolver.query(
-//            MediaStore.Audio.Media.INTERNAL_CONTENT_URI,
-//            arrayOf<String>(
-//                MediaStore.Audio.Media._ID,
-//                MediaStore.Audio.Media.TITLE,
-//                MediaStore.Audio.Media.ARTIST,
-//                MediaStore.Audio.Media.DURATION,
-//                MediaStore.Audio.Media.DATA
-//            ),
-//            null,
-//            null,
-//            null
-//        )
-//        val tracks = mutableListOf<MusicTrackData>()
-//        if (cursor?.moveToFirst() == true) {
-//            do {
-//                val data = MusicTrackData(
-//                    cursor.getInt(
-//                        cursor.getColumnIndex(MediaStore.Audio.Media._ID)
-//                    ),
-//                    cursor.getString(
-//                        cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
-//                    ),
-//
-//
-//                    cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)),
-//                    cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)),
-//                    cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA)),
-//                    null
-//                )
-//                tracks.add(data)
-//            } while (cursor.moveToNext());
-//        }
-//        cursor?.close()
-//        return tracks
-//    }
 
     fun getCurrentTrack(): MusicTrackData {
         if (trackList.value.isEmpty()) return MusicTrackData(-1, "", "", 0, "")
         return trackList.value[player.currentMediaItemIndex]
     }
 
-//    private fun onDestroy() {
-//        application.onTerminate()
-//        player.release()
-//    }
+    fun onDestroy() {
+        player.release()
+        Log.d("PLAYER", "released")
+    }
 
 }

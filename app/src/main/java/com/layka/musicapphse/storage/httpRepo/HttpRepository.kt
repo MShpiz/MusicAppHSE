@@ -1,6 +1,5 @@
 package com.layka.musicapphse.storage.httpRepo
 
-import android.util.Log
 import com.layka.musicapphse.screens.AlbumScreen.PlaylistData
 import com.layka.musicapphse.screens.Lists.ArtistList.ArtistData
 import com.layka.musicapphse.screens.Lists.PlaylistList.ShortPlaylistData
@@ -28,10 +27,6 @@ class HttpRepository @Inject constructor(
     private suspend fun getToken(): String {
         val tokenValue = tokenManager.getToken().first()
         return "Bearer $tokenValue"
-    }
-
-    override suspend fun getTrackInfo(trackId: Int) {
-        api.getTrackInfo(getToken(), trackId)
     }
 
     override suspend fun getAlbum(albumName: String) {
@@ -165,10 +160,10 @@ class HttpRepository @Inject constructor(
         }
     }
 
-    override suspend fun addTrackToPlayList(playlistId: Int, trackId: Int) {
+    override suspend fun addTrackToPlayList(playlist: ShortPlaylistData, trackId: Int) {
         try {
             // Log.v("HTTP-REPO", "add track to playlist")
-            val response = api.addTrackToPlayList(getToken(), playlistId, ShortTrackInfo(trackId))
+            val response = api.addTrackToPlayList(getToken(), playlist.id, ShortTrackInfo(trackId))
             if (response.code() == 401) {
                 // Log.v("HTTP-REPO", "unauthorized")
                 throw IllegalAccessException("unauthorized")
@@ -397,13 +392,14 @@ class HttpRepository @Inject constructor(
     }
 
     private fun convertResponseToMusicTrackData(info: TrackInfo): MusicTrackData {
+
         return MusicTrackData(
             info.id,
             info.title,
             info.artist,
             info.duration,
             serverUri + trackUri + info.id.toString(),
-            serverUri + info.image_url
+            if (info.image_url.isNotBlank()) serverUri + info.image_url else serverUri + "/api/tracks/" + info.id + "/image"
         )
     }
 
@@ -414,7 +410,7 @@ class HttpRepository @Inject constructor(
             info.Artist,
             info.Duration,
             serverUri + trackUri + info.ID.toString(),
-            serverUri + info.ImagePath
+            if (info.ImagePath.isNotBlank()) serverUri + info.ImagePath else serverUri + "/api/tracks/" + info.ID + "/image"
         )
     }
 }

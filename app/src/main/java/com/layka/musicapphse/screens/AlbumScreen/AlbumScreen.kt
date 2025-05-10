@@ -139,26 +139,3 @@ fun AlbumScreen(albumData: AlbumData, navController: NavController) {
     }
 
 }
-
-
-@Preview
-@Composable
-fun AlbumScreenPreview() {
-    val tracks = MusicTrackData(
-        1,
-        "Aaaaaaa Aaaaa",
-        "Artist 1",
-        100,
-        ""
-    )
-    val data = AlbumData(
-        1,
-        "Крик души",
-        "Типикал вышкинец",
-        listOf(
-            tracks, tracks, tracks, tracks, tracks, tracks, tracks, tracks, tracks, tracks,
-            tracks, tracks, tracks, tracks, tracks, tracks, tracks, tracks, tracks, tracks
-        ),
-    )
-    // AlbumScreen(albumData = data, null)
-}
