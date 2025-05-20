@@ -85,7 +85,7 @@ fun ArtistScreen(
                     )
                 }
             },
-            modifier = Modifier.padding(padding)
+            modifier = Modifier.padding(padding).padding(bottom=100.dp)
         ) { bottomSheetInnerPadding ->
             Box(
                 modifier = Modifier

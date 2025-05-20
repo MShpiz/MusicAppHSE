@@ -1,5 +1,6 @@
 package com.layka.musicapphse.screens.player
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
@@ -30,6 +32,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -47,52 +50,59 @@ fun CollapsedState(
     playerPosition: MutableState<Float>
 ) {
     Column {
-        Slider(
-            value = playerPosition.value / 1000,
-            onValueChange = { playerModel.queueModel.changePosition((it * 1000).toLong()) },
-            valueRange = 0f..(playerModel.queueModel.currentTrack.value?.duration?.toFloat() ?: 0f),
-            enabled = false,
-            track = { currSliderState ->
-                val fraction = remember {
-                    derivedStateOf {
-                        (currSliderState.value - currSliderState.valueRange.start) / (currSliderState.valueRange.endInclusive - currSliderState.valueRange.start)
-                    }
-                }
-
-                Box(Modifier.fillMaxWidth()) {
-                    Box(
-                        Modifier
-                            .fillMaxWidth(fraction.value)
-                            .background(colorResource(id = R.color.white))
-                            .align(Alignment.TopStart)
-                            .height(6.dp)
-                            .background(colorResource(id = R.color.purple_200), CircleShape)
-                    )
-                    Box(
-                        Modifier
-                            .fillMaxWidth(1f - fraction.value)
-                            .background(colorResource(id = R.color.white))
-                            .align(Alignment.TopEnd)
-                            .height(6.dp)
-                            .background(
-                                colorResource(id = R.color.LightlyTransparentGrey),
-                                CircleShape
+        if ((playerModel.queueModel.currentTrack.value?.duration ?: 0) > 0) {
+            Slider(
+                value = playerPosition.value / 1000,
+                onValueChange = { playerModel.queueModel.changePosition((it * 1000).toLong()) },
+                valueRange = 0f..(playerModel.queueModel.currentTrack.value?.duration?.toFloat()
+                    ?: 0f),
+                enabled = false,
+                track = { currSliderState ->
+                    val fraction = remember {
+                        derivedStateOf {
+                            Log.d(
+                                "PLAYER_POSITION",
+                                currSliderState.valueRange.start.toString() + " " + currSliderState.valueRange.endInclusive + " " + currSliderState.value
                             )
-                    )
-                }
-            },
-            thumb = {},
-            modifier = Modifier
-                .background(colorResource(id = R.color.white))
-                .fillMaxWidth(0.98f)
-                .height(5.dp)
-                .align(Alignment.CenterHorizontally)
-        )
+                            (currSliderState.value - currSliderState.valueRange.start) / (currSliderState.valueRange.endInclusive - currSliderState.valueRange.start)
+                        }
+                    }
+
+                    Box(Modifier.fillMaxWidth()) {
+                        Box(
+                            Modifier
+                                .fillMaxWidth(fraction.value)
+                                .align(Alignment.TopStart)
+                                .height(6.dp)
+                                .background(colorResource(id = R.color.purple_200), CircleShape)
+                        )
+                        Box(
+                            Modifier
+                                .fillMaxWidth(1f - fraction.value)
+                                .background(colorResource(id = R.color.grey))
+                                .align(Alignment.TopEnd)
+                                .height(6.dp)
+                                .background(
+                                    colorResource(id = R.color.LightlyTransparentGrey),
+                                    CircleShape
+                                )
+                        )
+                    }
+                },
+                thumb = {},
+                modifier = Modifier
+                    .height(1.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+
+            )
+        }
         Row(modifier = Modifier
             .fillMaxWidth()
+            .padding(top = 4.dp)
             .clickable { onClicked() }
             .background(colorResource(id = R.color.white))
-            .padding(top = 23.dp, bottom = 12.dp)) {
+            .padding(top = 19.dp, bottom = 15.dp)) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .httpHeaders(playerModel.headers.value)
@@ -106,16 +116,21 @@ fun CollapsedState(
                 modifier = Modifier
                     .padding(start = 10.dp, end = 10.dp)
                     .height(40.dp)
+                    .width(40.dp)
             )
-            Column {
+            Column(modifier = Modifier.width(150.dp)) {
                 Text(
                     text = playerModel.queueModel.currentTrack.value?.trackName ?: "",
                     fontSize = 20.sp,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
                     modifier = Modifier.padding(start = 20.dp)
                 )
                 Text(
                     text = playerModel.queueModel.currentTrack.value?.artists ?: "",
                     fontSize = 15.sp,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
                     modifier = Modifier.padding(start = 20.dp)
                 )
             }

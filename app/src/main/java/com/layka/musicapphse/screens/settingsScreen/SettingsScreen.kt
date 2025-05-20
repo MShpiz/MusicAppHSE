@@ -57,6 +57,7 @@ fun SettingsScreen(
         Column(
             Modifier
                 .padding(innerPadding)
+                .padding(bottom=100.dp)
                 .fillMaxSize()
         ) {
 

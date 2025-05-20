@@ -13,15 +13,20 @@ fun PlaylistList(
     playLists: List<ShortPlaylistData>,
     navController: NavController,
     showCheckBox: Boolean = false,
-    onCheckBoxChecked: (id: Int, check: Boolean) -> Unit = { id, check -> }
+    onCheckBoxChecked: (id: Int, check: Boolean) -> Unit = { id, check -> },
+    enableClick: Boolean = true
 ) {
+    val onclick =
     Column(modifier = Modifier.fillMaxWidth()) {
         playLists.forEachIndexed  { idx, playlist ->
             PlaylistItem(
                 playlist,
-                { navController.navigate("playlist/${playlist.id}") },
+                { if (enableClick) {
+                    navController.navigate("playlist/${playlist.id}")
+                } },
                 showCheckBox,
-                onCheckBoxChecked
+                onCheckBoxChecked,
+
             )
         }
     }

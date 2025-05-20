@@ -56,7 +56,8 @@ fun AddTrackToPlaylistScreen(
                 playLists = viewModel.playlists,
                 navController = navController,
                 showCheckBox = true,
-                onCheckBoxChecked = { id, checked -> viewModel.addPlaylist(id, checked) })
+                onCheckBoxChecked = { id, checked -> viewModel.addPlaylist(id, checked) },
+                enableClick = false)
         }
 
     }

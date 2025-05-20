@@ -70,11 +70,24 @@ class PlaylistScreenViewModel @Inject constructor(private val repository: Reposi
         }
     }
 
-    fun removeTracksFromPlaylist(navController: NavController, callback: ()->Unit) {
+    fun removeTracksFromPlaylist( callback: () -> Unit) {
         viewModelScope.launch {
             tracks.forEach {
                 repository.deleteTrackFromPlayList(playlistData.value.id, it)
+                playlistData.value = PlaylistData(
+                    playlistData.value.createdAt,
+                    playlistData.value.description,
+                    playlistData.value.id,
+                    playlistData.value.name,
+                    playlistData.value.tracks.filter { track -> track.trackId != it }
+                )
             }
         }.invokeOnCompletion { callback() }
+    }
+
+    fun deletePlaylist(playlistId: Int) {
+        viewModelScope.launch {
+            repository.deletePlayList(playlistId)
+        }
     }
 }

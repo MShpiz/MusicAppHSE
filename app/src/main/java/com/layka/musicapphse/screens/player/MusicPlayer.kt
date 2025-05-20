@@ -1,5 +1,6 @@
 package com.layka.musicapphse.screens.player
 
+import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedVisibility
@@ -13,9 +14,6 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
 import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -23,12 +21,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,7 +32,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
-import com.layka.musicapphse.R
+import androidx.navigation.compose.currentBackStackEntryAsState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -51,7 +46,6 @@ private enum class Anchors {
 @Composable
 fun MusicPlayer(playerModel: PlayerModel = hiltViewModel(), navController: NavController) {
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
-    val heightCollapsed = remember { mutableStateOf(0.dp) } //in dp
     val configuration = LocalConfiguration.current
     val density = LocalDensity.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -116,16 +110,19 @@ fun MusicPlayer(playerModel: PlayerModel = hiltViewModel(), navController: NavCo
     backDispatcher.addCallback(lifecycleOwner, backCallback)
 
     val playerPosition = remember { mutableStateOf(0f) }
-    if (playerModel.queueModel.isPlaying.value) {
-        LaunchedEffect(Unit) {
-            while (true) {
-                playerPosition.value = playerModel.queueModel.getCurrPosition().toFloat()
-                delay(1.seconds / 30)
-            }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            playerPosition.value = playerModel.queueModel.getCurrPosition().toFloat()
+            delay(1.seconds / 30)
         }
     }
 
-     if (playerModel.queueModel.currentTrack.value != null) {
+
+    if (
+        !navController.currentBackStackEntryAsState()
+            .value?.destination?.route.toString().startsWith("auth")
+    ) {
 
         Box(
             Modifier
@@ -168,5 +165,5 @@ fun MusicPlayer(playerModel: PlayerModel = hiltViewModel(), navController: NavCo
             }
         }
 
-     }
+    }
 }

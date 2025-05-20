@@ -1,5 +1,6 @@
 package com.layka.musicapphse.screens.utils
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -56,6 +57,7 @@ fun TopBar(
             context, text, Toast.LENGTH_SHORT
         ).show()
     }
+    val currentLocation = navController.currentBackStackEntryAsState()
 
     TopAppBar(
         navigationIcon = {
@@ -77,12 +79,17 @@ fun TopBar(
                 Text(screenName)
         },
         actions = {
-            IconButton(onClick = { createPlaylistPopupOn.value = true }) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.library_add),
-                    contentDescription = "Localized description"
-                )
+
+            if (!currentLocation.value?.destination?.route.toString().startsWith("trackPlaylist/") ||
+                !currentLocation.value?.destination?.route.toString().startsWith("settings_screen")) {
+                IconButton(onClick = { createPlaylistPopupOn.value = true }) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.library_add),
+                        contentDescription = "Localized description"
+                    )
+                }
             }
+
             IconButton(onClick = { navController.navigate("settings_screen") }) {
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.settings),

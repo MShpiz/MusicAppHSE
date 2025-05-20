@@ -107,7 +107,8 @@ fun PlaylistScreen(
             onChecked = { id, checked ->
                 playlistScreenViewModel.addTrack(id, checked)
             },
-            showCheckbox = isRemovingTracks.value
+            showCheckbox = isRemovingTracks.value,
+            enableClick = showEditScreen.value
         )
     }
     val showScreenName = remember { mutableStateOf(false) }
@@ -128,7 +129,6 @@ fun PlaylistScreen(
             } else {
                 FloatingActionButton(onClick = {
                     playlistScreenViewModel.removeTracksFromPlaylist(
-                        navController,
                         callBack
                     )
                 }) {
@@ -137,7 +137,7 @@ fun PlaylistScreen(
             }
         }
     ) { innerPadding ->
-        Column(Modifier.padding(innerPadding)) {
+        Column(Modifier.padding(innerPadding).padding(bottom=100.dp)) {
             header()
             body()
         }
@@ -200,6 +200,10 @@ fun PlaylistScreen(
                         ) {
                             Text("Remove tracks")
                         }
+                    }
+                    Row (modifier = Modifier
+                        .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,) {
                         TextButton(
                             onClick = {
                                 showEditScreen.value = false
@@ -212,6 +216,15 @@ fun PlaylistScreen(
                             modifier = Modifier.padding(8.dp),
                         ) {
                             Text(stringResource(id = R.string.update))
+                        }
+                        TextButton(
+                            onClick = {
+                                playlistScreenViewModel.deletePlaylist(playlistId)
+                                navController.popBackStack()
+                            },
+                            modifier = Modifier.padding(8.dp),
+                        ) {
+                            Text(stringResource(id = R.string.delete_playlist))
                         }
                     }
                 }

@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.Junction
 import androidx.room.Relation
 
-class PlaylistWithTracks(
+data class PlaylistWithTracks(
     @Embedded val playlist: PlaylistEntity,
 
     @Relation(

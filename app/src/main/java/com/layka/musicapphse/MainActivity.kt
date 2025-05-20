@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
 
                 Box(Modifier.fillMaxSize()) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "playlist/1") {
+                    NavHost(navController = navController, startDestination = "main_screen") {
                         composable("main_screen") {
                             MainScreen(
                                 navController = navController

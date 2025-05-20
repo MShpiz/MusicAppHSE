@@ -34,6 +34,7 @@ fun TrackList(
     showMenuBtn: Boolean = true,
     showCheckbox: Boolean = false,
     onChecked: (trackId: Int, checked: Boolean) -> Unit = { _, _ -> },
+    enableClick: Boolean = true,
     viewModel: TrackListViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -83,10 +84,12 @@ fun TrackList(
                         headers = viewModel.headers.value,
                         showArtistName = showArtistName,
                         onClicked = fun() {
-                            viewModel.queueModel.setQueue(
-                                data.value,
-                                idx.toUInt()
-                            )
+                            if (enableClick) {
+                                viewModel.queueModel.setQueue(
+                                    data.value,
+                                    idx.toUInt()
+                                )
+                            }
                         },
                         onDeleteTrack = { id ->
                             viewModel.deleteTrack(id, navController!!)

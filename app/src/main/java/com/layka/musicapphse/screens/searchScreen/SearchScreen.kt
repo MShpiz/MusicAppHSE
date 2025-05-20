@@ -31,7 +31,7 @@ import com.layka.musicapphse.screens.utils.TopBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel = hiltViewModel()) {
-    var expanded = rememberSaveable { mutableStateOf(false) }
+    val expanded = rememberSaveable { mutableStateOf(false) }
     val textFieldState = rememberTextFieldState("")
 
 
@@ -48,7 +48,8 @@ fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel 
     ) { innerPadding ->
 
         Column ( Modifier
-            .padding(innerPadding)) {
+            .padding(innerPadding)
+            .padding(bottom=100.dp)) {
 
 
             Box(

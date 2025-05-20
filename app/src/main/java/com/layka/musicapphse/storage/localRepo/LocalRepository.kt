@@ -1,5 +1,6 @@
 package com.layka.musicapphse.storage.localRepo
 
+import android.util.Log
 import com.layka.musicapphse.screens.AlbumScreen.PlaylistData
 import com.layka.musicapphse.screens.Lists.ArtistList.ArtistData
 import com.layka.musicapphse.screens.Lists.PlaylistList.ShortPlaylistData
@@ -36,10 +37,15 @@ class LocalRepository @Inject constructor(private val dataBase: MusicDb) : Music
     }
 
     override suspend fun getPlayList(playlistId: Int): PlaylistData {
+        val all = dataBase.playlistTrackDao().getAll()
+        Log.d("PLAYLIST", all.toString())
+
         val playlist = dataBase.playlistDao().getPlaylistById(playlistId)
         if (playlist != null) {
+            val res = dataBase.playlistTrackDao().getPlaylistWithTracksByPlaylistId(playlistId);
+            Log.d("PLAYLIST", res?.tracks.toString())
             val tracks =
-                dataBase.playlistTrackDao().getPlaylistWithTracksByPlaylistId(playlistId)?.tracks
+               res?.tracks
                     ?: listOf()
             return PlaylistData("", playlist.description ?: "", playlistId, playlist.name, convertListTrackEntities(tracks))
         }
@@ -62,8 +68,10 @@ class LocalRepository @Inject constructor(private val dataBase: MusicDb) : Music
 
     override suspend fun deletePlayList(playlistId: Int): Boolean {
         val playlist = dataBase.playlistDao().getPlaylistById(playlistId)
-        if (playlist != null)
+        if (playlist != null) {
             dataBase.playlistDao().deletePlaylist(playlist)
+            dataBase.playlistTrackDao().deletePlaylistById(playlistId)
+        }
         return true
     }
 
@@ -72,7 +80,9 @@ class LocalRepository @Inject constructor(private val dataBase: MusicDb) : Music
         if (pl == null) {
             dataBase.playlistDao().insertPlayList(PlaylistEntity(playlist.name, playlist.description, playlist.id))
         }
-        dataBase.playlistTrackDao().addTrackToPlaylist(playlist.id, trackId)
+        val tracks = dataBase.playlistTrackDao().getPlaylistWithTracksByPlaylistId(playlist.id)
+        if (tracks?.tracks?.find { it.trackId == trackId } == null)
+            dataBase.playlistTrackDao().addTrackToPlaylist(playlist.id, trackId)
     }
 
     override suspend fun deleteTrackFromPlayList(playlistId: Int, trackId: Int) {
