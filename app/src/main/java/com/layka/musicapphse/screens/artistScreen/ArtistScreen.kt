@@ -1,6 +1,8 @@
 package com.layka.musicapphse.screens.artistScreen
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,6 +35,7 @@ import coil3.network.httpHeaders
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.layka.musicapphse.R
+import com.layka.musicapphse.customComposableElements.ScreenWithImageHeader.ScreenWithImageHeader
 import com.layka.musicapphse.screens.Lists.TrackList.MusicTrackData
 import com.layka.musicapphse.screens.Lists.TrackList.TrackList
 import com.layka.musicapphse.screens.utils.BottomBar
@@ -48,11 +51,8 @@ fun ArtistScreen(
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-    val headerHeight = 500.dp
-    val modalBottomSheetHeight = screenHeight - headerHeight + 100.dp
-
-    val scaffoldState = rememberBottomSheetScaffoldState()
-    val scrollState = rememberScrollState()
+    val headerHeight = 300.dp
+    val modalBottomSheetHeight = screenHeight - headerHeight + 200.dp
 
     val gotData = remember {
         mutableStateOf(false)
@@ -72,27 +72,8 @@ fun ArtistScreen(
         },
         bottomBar = { BottomBar(navController = navController) }
     ) { padding ->
-        BottomSheetScaffold(
-            scaffoldState = scaffoldState,
-            sheetPeekHeight = modalBottomSheetHeight,
-            sheetSwipeEnabled = scrollState.value == 0,
-            sheetDragHandle = null,
-            sheetContent = {
-                Box(Modifier.height(screenHeight)) {
-                    ArtistScreenBody(
-                        viewModel.artistData,
-                        navController
-                    )
-                }
-            },
-            modifier = Modifier.padding(padding).padding(bottom=100.dp)
-        ) { bottomSheetInnerPadding ->
-            Box(
-                modifier = Modifier
-                    .padding(bottomSheetInnerPadding),
-                contentAlignment = Alignment.Center
-            ) {
-                val cover = remember { mutableStateOf<String?>(null) }
+        ScreenWithImageHeader(header = {
+            val cover = remember { mutableStateOf<String?>(null) }
                 if (viewModel.artistData.isNotEmpty()) {
                     cover.value = viewModel.artistData.get(0).albumCover
                 }
@@ -102,17 +83,63 @@ fun ArtistScreen(
                     image = cover.value,
                     headers = viewModel.headers.value
                 )
-            }
-        }
+        }, body = {
+            Box(
+                    Modifier
+                        .padding(bottom = 100.dp)
+                        .height(screenHeight)
+                ) {
+                    ArtistScreenBody(
+                        viewModel.artistData,
+                        navController
+                    )
+                }
+        }, padding = padding)
+//        BottomSheetScaffold(
+//            scaffoldState = scaffoldState,
+//            sheetPeekHeight = modalBottomSheetHeight,
+//            sheetSwipeEnabled = scrollState.value == 0,
+//            sheetDragHandle = null,
+//            sheetContent = {
+//                Box(
+//                    Modifier
+//                        .padding(bottom = 100.dp)
+//                        .height(screenHeight)
+//                ) {
+//                    ArtistScreenBody(
+//                        viewModel.artistData,
+//                        navController
+//                    )
+//                }
+//            },
+//            modifier = Modifier.padding(padding).padding(bottom=100.dp)
+//        ) { bottomSheetInnerPadding ->
+//            Box(
+//                modifier = Modifier
+//                    .padding(bottomSheetInnerPadding)
+//            ) {
+//                val cover = remember { mutableStateOf<String?>(null) }
+//                if (viewModel.artistData.isNotEmpty()) {
+//                    cover.value = viewModel.artistData.get(0).albumCover
+//                }
+//                ArtistHeader(
+//                    name = artistName,
+//                    height = headerHeight,
+//                    image = cover.value,
+//                    headers = viewModel.headers.value
+//                )
+//            }
+//        }
     }
 }
 
 @Composable
 private fun ArtistHeader(name: String, height: Dp, image: String?, headers: NetworkHeaders) {
-    Box(
+    Column(
         Modifier
             .fillMaxWidth()
             .height(height)
+            .border(1.dp, color = Color.Blue)
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -125,17 +152,19 @@ private fun ArtistHeader(name: String, height: Dp, image: String?, headers: Netw
             placeholder = painterResource(R.drawable.profile_picture),
             error = painterResource(id = R.drawable.profile_picture),
             modifier = Modifier
+                .border(1.dp, Color.Red)
                 .padding(top = 7.dp)
-                .align(Alignment.TopCenter)
+                .align(Alignment.CenterHorizontally)
                 .clip(CircleShape)
-                .height(200.dp)
+                .height(185.dp)
         )
         Text(
             text = name,
             fontSize = 30.sp,
             style = TextStyle(color = Color.Gray),
             modifier = Modifier
-                .align(Alignment.BottomCenter)
+                .border(1.dp, Color.Gray)
+                .align(Alignment.CenterHorizontally)
         )
     }
 }

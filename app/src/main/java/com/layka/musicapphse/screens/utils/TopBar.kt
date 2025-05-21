@@ -1,6 +1,5 @@
 package com.layka.musicapphse.screens.utils
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,6 +22,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.layka.musicapphse.R
+import com.layka.musicapphse.storage.RepoType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,6 +58,8 @@ fun TopBar(
         ).show()
     }
     val currentLocation = navController.currentBackStackEntryAsState()
+    val currModeState =
+        topBarViewModel.getAddPlaylistState().collectAsState(initial = RepoType.HTTP)
 
     TopAppBar(
         navigationIcon = {
@@ -80,8 +82,13 @@ fun TopBar(
         },
         actions = {
 
-            if (!currentLocation.value?.destination?.route.toString().startsWith("trackPlaylist/") ||
-                !currentLocation.value?.destination?.route.toString().startsWith("settings_screen")) {
+            if (currModeState.value == RepoType.HTTP && (
+                        !currentLocation.value?.destination?.route.toString()
+                            .startsWith("trackPlaylist/") ||
+                                !currentLocation.value?.destination?.route.toString()
+                                    .startsWith("settings_screen")
+                        )
+            ) {
                 IconButton(onClick = { createPlaylistPopupOn.value = true }) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.library_add),
