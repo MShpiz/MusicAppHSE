@@ -64,17 +64,11 @@ class QueueModel(
         trackIdx = min(currentTrack.toInt(), player.mediaItemCount-1)
         this.currentTrack.value = trackList.value[trackIdx]
 
-        player.addMediaItem(
-            MediaItem.fromUri(
-                Uri.parse(Environment.getExternalStorageDirectory().toString() + "/Music/Stuff/The evil in me.mp3")),
-            )
-
         startPlayer()
         isPlaying.value = true
     }
 
     private fun addMediaItemsToPlayer(newQueue: List<MusicTrackData>) {
-
         newQueue.forEach {
             Log.v("QUEUE_MODEL", it.uri)
             player.addMediaItem(convertToMediaItem(it))

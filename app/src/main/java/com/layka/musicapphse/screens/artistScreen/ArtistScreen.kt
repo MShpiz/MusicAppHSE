@@ -1,18 +1,14 @@
 package com.layka.musicapphse.screens.artistScreen
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,7 +47,7 @@ fun ArtistScreen(
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-    val headerHeight = 300.dp
+    val headerHeight = 350.dp
     val modalBottomSheetHeight = screenHeight - headerHeight + 200.dp
 
     val gotData = remember {
@@ -74,26 +70,26 @@ fun ArtistScreen(
     ) { padding ->
         ScreenWithImageHeader(header = {
             val cover = remember { mutableStateOf<String?>(null) }
-                if (viewModel.artistData.isNotEmpty()) {
-                    cover.value = viewModel.artistData.get(0).albumCover
-                }
-                ArtistHeader(
-                    name = artistName,
-                    height = headerHeight,
-                    image = cover.value,
-                    headers = viewModel.headers.value
-                )
+            if (viewModel.artistData.isNotEmpty()) {
+                cover.value = viewModel.artistData.get(0).albumCover
+            }
+            ArtistHeader(
+                name = artistName,
+                height = headerHeight,
+                image = cover.value,
+                headers = viewModel.headers.value
+            )
         }, body = {
             Box(
-                    Modifier
-                        .padding(bottom = 100.dp)
-                        .height(screenHeight)
-                ) {
-                    ArtistScreenBody(
-                        viewModel.artistData,
-                        navController
-                    )
-                }
+                Modifier
+                    .padding(bottom = 100.dp)
+                    .height(screenHeight)
+            ) {
+                ArtistScreenBody(
+                    viewModel.artistData,
+                    navController
+                )
+            }
         }, padding = padding)
 //        BottomSheetScaffold(
 //            scaffoldState = scaffoldState,
@@ -139,7 +135,6 @@ private fun ArtistHeader(name: String, height: Dp, image: String?, headers: Netw
         Modifier
             .fillMaxWidth()
             .height(height)
-            .border(1.dp, color = Color.Blue)
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -152,7 +147,6 @@ private fun ArtistHeader(name: String, height: Dp, image: String?, headers: Netw
             placeholder = painterResource(R.drawable.profile_picture),
             error = painterResource(id = R.drawable.profile_picture),
             modifier = Modifier
-                .border(1.dp, Color.Red)
                 .padding(top = 7.dp)
                 .align(Alignment.CenterHorizontally)
                 .clip(CircleShape)
@@ -163,7 +157,6 @@ private fun ArtistHeader(name: String, height: Dp, image: String?, headers: Netw
             fontSize = 30.sp,
             style = TextStyle(color = Color.Gray),
             modifier = Modifier
-                .border(1.dp, Color.Gray)
                 .align(Alignment.CenterHorizontally)
         )
     }

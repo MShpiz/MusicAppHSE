@@ -29,10 +29,10 @@ fun MainScreen(
 ) {
     val gotTracks = remember { mutableStateOf(false) }
     if (!gotTracks.value) {
-        Log.v("MAIN_SCREEN", gotTracks.value.toString())
+        Log.d("MAIN_SCREEN", gotTracks.value.toString())
         musicDataViewModel.getAllData(navController)
         gotTracks.value = true
-        Log.v("MAIN_SCREEN", gotTracks.value.toString())
+        Log.d("MAIN_SCREEN", gotTracks.value.toString())
     }
     Scaffold(topBar = {
         TopBar(

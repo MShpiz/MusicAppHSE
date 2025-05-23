@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.layka.musicapphse.screens.player.MusicPlayer
 
 @Composable
@@ -22,13 +23,25 @@ fun BottomBar(navController: NavController) {
             actions = {
                 Row {
                     IconButton(
-                        onClick = { navController.navigate("main_screen") },
+                        onClick = { navController.navigate("main_screen") {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        } },
                         Modifier.weight(1f)
                     ) {
                         Icon(Icons.Filled.Home, contentDescription = "main page")
                     }
                     IconButton(
-                        onClick = { navController.navigate("search_screen") },
+                        onClick = { navController.navigate("search_screen") {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                         } },
                         Modifier.weight(1f)
                     ) {
                         Icon(
@@ -37,7 +50,13 @@ fun BottomBar(navController: NavController) {
                         )
                     }
                     IconButton(
-                        onClick = { navController.navigate("profile_screen") },
+                        onClick = { navController.navigate("profile_screen"){
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }  },
                         Modifier.weight(1f)
                     ) {
                         Icon(

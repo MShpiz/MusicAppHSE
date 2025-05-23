@@ -30,21 +30,21 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         var exception: IllegalAccessException? = null
         viewModelScope.launch {
             try {
-                Log.v("RECENT_TRACKS", "start getting")
+                Log.d("RECENT_TRACKS", "start getting")
                 val result = repository.getAllTracks()
                 getAllArtists(result)
-                Log.v("RECENT_TRACKS", result.toString())
+                Log.d("RECENT_TRACKS", result.toString())
                 result.subList(0, min(5, result.size)).forEach { trackData.add(it) }
             } catch (e: IllegalAccessException) {
                 exception = e
-                Log.v("RECENT_TRACKS", e.message.toString())
+                Log.d("RECENT_TRACKS", e.message.toString())
             } catch (e: Exception) {
-                Log.v("RECENT_TRACKS", e.message.toString())
+                Log.d("RECENT_TRACKS", e.message.toString())
             }
         }.invokeOnCompletion {
-            Log.v("RECENT_TRACKS", "got all")
+            Log.d("RECENT_TRACKS", "got all")
             if (exception != null) {
-                Log.v("RECENT_TRACKS", exception!!.message.toString())
+                Log.d("RECENT_TRACKS", exception!!.message.toString())
                 navController.navigate("auth_screen")
             }
         }

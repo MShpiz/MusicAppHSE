@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 fun ScreenWithImageHeader(
     header: @Composable () -> Unit,
     body: @Composable () -> Unit,
-    headerHeight: Int = 370,
+    headerHeight: Int = 300,
     padding: PaddingValues
 ) {
     val configuration = LocalConfiguration.current
@@ -35,7 +35,7 @@ fun ScreenWithImageHeader(
         sheetPeekHeight = modalBottomSheetHeight,
         sheetSwipeEnabled = scrollState.value == 0,
         sheetDragHandle = null,
-        sheetContent = { Box(Modifier.height(screenHeight - padding.calculateTopPadding())) { body() } },
+        sheetContent = { Box(Modifier.height(screenHeight)) { body() } },
         modifier = Modifier.padding(padding)
     ) { bottomSheetInnerPadding ->
         Box(

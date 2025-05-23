@@ -57,7 +57,6 @@ fun TopBar(
             context, text, Toast.LENGTH_SHORT
         ).show()
     }
-    val currentLocation = navController.currentBackStackEntryAsState()
     val currModeState =
         topBarViewModel.getAddPlaylistState().collectAsState(initial = RepoType.HTTP)
 
@@ -82,12 +81,12 @@ fun TopBar(
         },
         actions = {
 
-            if (currModeState.value == RepoType.HTTP && (
-                        !currentLocation.value?.destination?.route.toString()
-                            .startsWith("trackPlaylist/") ||
-                                !currentLocation.value?.destination?.route.toString()
-                                    .startsWith("settings_screen")
-                        )
+            if (
+                !navController.currentBackStackEntryAsState().value?.destination?.route.toString()
+                    .startsWith("trackPlaylist") &&
+                !navController.currentBackStackEntryAsState().value?.destination?.route.toString()
+                    .startsWith("settings_screen")
+
             ) {
                 IconButton(onClick = { createPlaylistPopupOn.value = true }) {
                     Icon(

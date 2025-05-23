@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
@@ -48,8 +49,10 @@ class MainActivity : ComponentActivity() {
             val musicPermission = rememberPermissionState(
                 android.Manifest.permission.READ_MEDIA_AUDIO
             )
-            if (!musicPermission.status.isGranted) {
-                musicPermission.launchPermissionRequest()
+            LaunchedEffect(Unit) {
+                if (!musicPermission.status.isGranted) {
+                    musicPermission.launchPermissionRequest()
+                }
             }
 
             MusicAppHSETheme {
