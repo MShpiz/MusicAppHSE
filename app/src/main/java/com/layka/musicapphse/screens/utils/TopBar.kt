@@ -1,5 +1,6 @@
 package com.layka.musicapphse.screens.utils
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -80,13 +81,12 @@ fun TopBar(
                 Text(screenName)
         },
         actions = {
-
             if (
                 !navController.currentBackStackEntryAsState().value?.destination?.route.toString()
                     .startsWith("trackPlaylist") &&
                 !navController.currentBackStackEntryAsState().value?.destination?.route.toString()
-                    .startsWith("settings_screen")
-
+                    .startsWith("settings_screen") &&
+                currModeState.value == RepoType.HTTP.toString()
             ) {
                 IconButton(onClick = { createPlaylistPopupOn.value = true }) {
                     Icon(

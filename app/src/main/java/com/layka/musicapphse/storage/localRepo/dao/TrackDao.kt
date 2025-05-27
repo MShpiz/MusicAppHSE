@@ -10,10 +10,10 @@ import com.layka.musicapphse.storage.localRepo.entities.TrackEntity
 @Dao
 interface TrackDao {
     @Insert
-    fun insertTrack(trackEntity: TrackEntity)
+    suspend fun insertTrack(trackEntity: TrackEntity)
 
     @Delete
-    fun deleteTrackById(trackEntity: TrackEntity)
+    suspend fun deleteTrackById(trackEntity: TrackEntity)
 
     @Query("SELECT * FROM tracks")
     suspend fun getAll(): List<TrackEntity>?

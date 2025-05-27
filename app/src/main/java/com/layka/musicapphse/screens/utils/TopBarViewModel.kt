@@ -1,6 +1,5 @@
 package com.layka.musicapphse.screens.utils
 
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -12,12 +11,16 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TopBarViewModel @Inject constructor(private val repository: Repository, private val tokenManager: TokenManager) : ViewModel() {
+class TopBarViewModel @Inject constructor(
+    private val repository: Repository,
+    private val tokenManager: TokenManager
+) : ViewModel() {
     private var creationResult = false
     private var isUnauthorised = false
     fun getAddPlaylistState(): Flow<String> {
         return tokenManager.getRepoType()
     }
+
     fun createPlayList(
         name: String,
         description: String,
@@ -27,7 +30,7 @@ class TopBarViewModel @Inject constructor(private val repository: Repository, pr
 
         viewModelScope.launch {
             try {
-                creationResult = repository.createPlayList(name, description)
+                creationResult = repository.createPlayList(name, description) == null
             } catch (e: IllegalAccessException) {
                 isUnauthorised = true
             }

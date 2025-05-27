@@ -6,13 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.layka.musicapphse.screens.AlbumScreen.PlaylistData
+import com.layka.musicapphse.services.TokenManager
 import com.layka.musicapphse.storage.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class PlaylistScreenViewModel @Inject constructor(private val repository: Repository) :
+class PlaylistScreenViewModel @Inject constructor(private val repository: Repository, val tokenManager: TokenManager) :
     ViewModel() {
     val playlistData = mutableStateOf<PlaylistData>(
         PlaylistData(

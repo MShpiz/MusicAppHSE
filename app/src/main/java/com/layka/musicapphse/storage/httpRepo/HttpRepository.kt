@@ -14,8 +14,11 @@ import com.layka.musicapphse.storage.httpRepo.returnTypes.ShortPlaylistInfo
 import com.layka.musicapphse.storage.httpRepo.returnTypes.ShortTrackInfo
 import com.layka.musicapphse.storage.httpRepo.returnTypes.TrackInfo
 import com.layka.musicapphse.storage.httpRepo.returnTypes.TrackPlays
+import com.layka.musicapphse.storage.localRepo.entities.UpdateEntity
+import com.layka.musicapphse.storage.localRepo.entities.UpdateType
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.first
+import kotlin.reflect.KSuspendFunction3
 
 class HttpRepository @Inject constructor(
     private val api: MusicApi,
@@ -37,11 +40,11 @@ class HttpRepository @Inject constructor(
         try {
             val response = api.getAllTracks(getToken())
             if (response.code() == 401) {
-                
+
                 throw IllegalAccessException("unauthorized")
             }
             val res: List<TrackInfo> = response.body()?.data ?: listOf()
-            
+
             return convertListTrackInfoToTrackData(res)
         } catch (e: Exception) {
             if (e is IllegalAccessException) throw e
@@ -96,7 +99,7 @@ class HttpRepository @Inject constructor(
         }
     }
 
-    override suspend fun createPlayList(name: String, description: String): Boolean {
+    override suspend fun createPlayList(name: String, description: String): PlaylistData? {
         try {
             // Log.v("HTTP-REPO", "get all tracks")
             val response = api.createPlayList(
@@ -108,12 +111,20 @@ class HttpRepository @Inject constructor(
                 throw IllegalAccessException("unauthorized")
             }
             // Log.v("HTTP-REPO", "create playlist " + response.body())
-
-            return response.code() == 201
+            if (response.code() == 201) {
+                val body = response.body()?.data ?: return null
+                return PlaylistData(
+                    body.createdAt,
+                    body.description,
+                    body.id,
+                    body.name,
+                    convertListTrackInfoToTrackData(body.tracks ?: listOf())
+                )
+            } else return null
         } catch (e: Exception) {
             if (e is IllegalAccessException) throw e
             // Log.v("HTTP-REPO", "get all tracks" + e.message)
-            return false
+            return null
         }
     }
 
@@ -160,7 +171,7 @@ class HttpRepository @Inject constructor(
         }
     }
 
-    override suspend fun addTrackToPlayList(playlist: ShortPlaylistData, trackId: Int) {
+    override suspend fun addTrackToPlayList(playlist: ShortPlaylistData, trackId: Int): Boolean {
         try {
             // Log.v("HTTP-REPO", "add track to playlist")
             val response = api.addTrackToPlayList(getToken(), playlist.id, ShortTrackInfo(trackId))
@@ -170,15 +181,15 @@ class HttpRepository @Inject constructor(
             }
             // Log.v("HTTP-REPO", "add track to playlist " + response.body())
 
-            return
+            return true
         } catch (e: Exception) {
             if (e is IllegalAccessException) throw e
             // Log.v("HTTP-REPO", "add track to playlist" + e.message)
-            return
+            return false
         }
     }
 
-    override suspend fun deleteTrackFromPlayList(playlistId: Int, trackId: Int) {
+    override suspend fun deleteTrackFromPlayList(playlistId: Int, trackId: Int): Boolean {
         try {
             // Log.v("HTTP-REPO", "add track to playlist")
             val response = api.deleteTrackFromPlayList(getToken(), playlistId, trackId)
@@ -188,11 +199,11 @@ class HttpRepository @Inject constructor(
             }
             // Log.v("HTTP-REPO", "add track to playlist " + response.body())
 
-            return
+            return true
         } catch (e: Exception) {
             if (e is IllegalAccessException) throw e
             // Log.v("HTTP-REPO", "add track to playlist" + e.message)
-            return
+            return false
         }
     }
 

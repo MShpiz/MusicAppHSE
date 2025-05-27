@@ -28,7 +28,7 @@ fun BottomBar(navController: NavController) {
                                 saveState = true
                             }
                             launchSingleTop = true
-                            restoreState = true
+                            restoreState = false
                         } },
                         Modifier.weight(1f)
                     ) {
@@ -40,7 +40,7 @@ fun BottomBar(navController: NavController) {
                                 saveState = true
                             }
                             launchSingleTop = true
-                            restoreState = true
+                            restoreState = false
                          } },
                         Modifier.weight(1f)
                     ) {
@@ -55,7 +55,7 @@ fun BottomBar(navController: NavController) {
                                 saveState = true
                             }
                             launchSingleTop = true
-                            restoreState = true
+                            restoreState = false
                         }  },
                         Modifier.weight(1f)
                     ) {

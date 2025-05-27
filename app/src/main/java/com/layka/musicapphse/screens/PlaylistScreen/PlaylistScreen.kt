@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -36,6 +37,7 @@ import com.layka.musicapphse.screens.Lists.TrackList.TrackList
 import com.layka.musicapphse.screens.PlaylistScreen.PlaylistScreenViewModel
 import com.layka.musicapphse.screens.utils.BottomBar
 import com.layka.musicapphse.screens.utils.TopBar
+import com.layka.musicapphse.storage.RepoType
 
 
 @Composable
@@ -123,21 +125,31 @@ fun PlaylistScreen(
         bottomBar = { BottomBar(navController = navController) },
         floatingActionButton = {
             if (!isRemovingTracks.value) {
-                FloatingActionButton(onClick = { showEditScreen.value = true }) {
+                FloatingActionButton(
+                    onClick = { showEditScreen.value = true },
+                    modifier = Modifier.padding(bottom = 100.dp)
+                ) {
                     Icon(Icons.Default.Create, contentDescription = "Add")
                 }
             } else {
-                FloatingActionButton(onClick = {
-                    playlistScreenViewModel.removeTracksFromPlaylist(
-                        callBack
-                    )
-                }) {
+                FloatingActionButton(
+                    onClick = {
+                        playlistScreenViewModel.removeTracksFromPlaylist(
+                            callBack
+                        )
+                    },
+                    modifier = Modifier.padding(bottom = 100.dp)
+                ) {
                     Icon(Icons.Default.Done, contentDescription = "Save")
                 }
             }
         }
     ) { innerPadding ->
-        Column(Modifier.padding(innerPadding).padding(bottom=100.dp)) {
+        Column(
+            Modifier
+                .padding(innerPadding)
+                .padding(bottom = 100.dp)
+        ) {
             header()
             body()
         }
@@ -201,9 +213,11 @@ fun PlaylistScreen(
                             Text("Remove tracks")
                         }
                     }
-                    Row (modifier = Modifier
-                        .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
                         TextButton(
                             onClick = {
                                 showEditScreen.value = false
@@ -217,14 +231,18 @@ fun PlaylistScreen(
                         ) {
                             Text(stringResource(id = R.string.update))
                         }
-                        TextButton(
-                            onClick = {
-                                playlistScreenViewModel.deletePlaylist(playlistId)
-                                navController.popBackStack()
-                            },
-                            modifier = Modifier.padding(8.dp),
+                        if (playlistScreenViewModel.tokenManager.getToken()
+                                .collectAsState(initial = RepoType.LOCAL).value == RepoType.HTTP.toString()
                         ) {
-                            Text(stringResource(id = R.string.delete_playlist))
+                            TextButton(
+                                onClick = {
+                                    playlistScreenViewModel.deletePlaylist(playlistId)
+                                    navController.popBackStack()
+                                },
+                                modifier = Modifier.padding(8.dp),
+                            ) {
+                                Text(stringResource(id = R.string.delete_playlist))
+                            }
                         }
                     }
                 }

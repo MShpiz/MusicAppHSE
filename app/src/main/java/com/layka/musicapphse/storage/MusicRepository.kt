@@ -15,11 +15,11 @@ interface MusicRepository {
     suspend fun deleteTrack(trackId: Int)
 
     suspend fun getPlayList(playlistId: Int): PlaylistData
-    suspend fun createPlayList(name: String, description: String): Boolean
+    suspend fun createPlayList(name: String, description: String): PlaylistData?
     suspend fun updatePlayList(name: String, description: String, id: Int): Boolean
     suspend fun deletePlayList(playlistId: Int): Boolean
-    suspend fun addTrackToPlayList(playlist: ShortPlaylistData, trackId: Int)
-    suspend fun deleteTrackFromPlayList(playlistId: Int, trackId: Int)
+    suspend fun addTrackToPlayList(playlist: ShortPlaylistData, trackId: Int): Boolean
+    suspend fun deleteTrackFromPlayList(playlistId: Int, trackId: Int): Boolean
     suspend fun getUserPlaylists(): List<ShortPlaylistData>
 
     suspend fun getArtistPlays(): List<ArtistPlays.ArtistPlaysInfo>
