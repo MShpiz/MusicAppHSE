@@ -2,6 +2,7 @@ package com.layka.musicapphse.customComposableElements.ScreenWithImageHeader
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -20,12 +21,12 @@ import androidx.compose.ui.unit.dp
 fun ScreenWithImageHeader(
     header: @Composable () -> Unit,
     body: @Composable () -> Unit,
-    headerHeight: Int = 300,
+    headerHeight: Int = 400,
     padding: PaddingValues
 ) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-    val modalBottomSheetHeight = screenHeight - headerHeight.dp
+    val modalBottomSheetHeight = screenHeight - headerHeight.dp + 100.dp
 
     val scaffoldState = rememberBottomSheetScaffoldState()
     val scrollState = rememberScrollState()
@@ -35,13 +36,16 @@ fun ScreenWithImageHeader(
         sheetPeekHeight = modalBottomSheetHeight,
         sheetSwipeEnabled = scrollState.value == 0,
         sheetDragHandle = null,
-        sheetContent = { Box(Modifier.height(screenHeight)) { body() } },
+        sheetContent = { Box(
+            Modifier
+                .height(screenHeight)
+                .padding(bottom = 100.dp)) { body() } },
         modifier = Modifier.padding(padding)
     ) { bottomSheetInnerPadding ->
         Box(
             modifier = Modifier
-                .padding(bottomSheetInnerPadding),
-            contentAlignment = Alignment.Center
+                .fillMaxSize(),
+            contentAlignment = Alignment.TopCenter
         ) {
             header()
         }

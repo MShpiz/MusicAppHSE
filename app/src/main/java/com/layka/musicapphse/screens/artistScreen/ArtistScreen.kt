@@ -37,7 +37,6 @@ import com.layka.musicapphse.screens.Lists.TrackList.TrackList
 import com.layka.musicapphse.screens.utils.BottomBar
 import com.layka.musicapphse.screens.utils.TopBar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistScreen(
     artistName: String,
@@ -48,7 +47,6 @@ fun ArtistScreen(
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     val headerHeight = 350.dp
-    val modalBottomSheetHeight = screenHeight - headerHeight + 200.dp
 
     val gotData = remember {
         mutableStateOf(false)
@@ -91,41 +89,6 @@ fun ArtistScreen(
                 )
             }
         }, padding = padding)
-//        BottomSheetScaffold(
-//            scaffoldState = scaffoldState,
-//            sheetPeekHeight = modalBottomSheetHeight,
-//            sheetSwipeEnabled = scrollState.value == 0,
-//            sheetDragHandle = null,
-//            sheetContent = {
-//                Box(
-//                    Modifier
-//                        .padding(bottom = 100.dp)
-//                        .height(screenHeight)
-//                ) {
-//                    ArtistScreenBody(
-//                        viewModel.artistData,
-//                        navController
-//                    )
-//                }
-//            },
-//            modifier = Modifier.padding(padding).padding(bottom=100.dp)
-//        ) { bottomSheetInnerPadding ->
-//            Box(
-//                modifier = Modifier
-//                    .padding(bottomSheetInnerPadding)
-//            ) {
-//                val cover = remember { mutableStateOf<String?>(null) }
-//                if (viewModel.artistData.isNotEmpty()) {
-//                    cover.value = viewModel.artistData.get(0).albumCover
-//                }
-//                ArtistHeader(
-//                    name = artistName,
-//                    height = headerHeight,
-//                    image = cover.value,
-//                    headers = viewModel.headers.value
-//                )
-//            }
-//        }
     }
 }
 

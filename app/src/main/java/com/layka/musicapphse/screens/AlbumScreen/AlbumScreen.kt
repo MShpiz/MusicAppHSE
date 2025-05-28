@@ -27,7 +27,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -36,7 +35,6 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.layka.musicapphse.R
 import com.layka.musicapphse.customComposableElements.ScreenWithImageHeader.ScreenWithImageHeader
-import com.layka.musicapphse.screens.Lists.TrackList.MusicTrackData
 import com.layka.musicapphse.screens.Lists.TrackList.TrackList
 
 
@@ -58,8 +56,8 @@ fun AlbumScreenHeader(
                 .memoryCachePolicy(CachePolicy.ENABLED)
                 .build(),
             contentDescription = albumName,
-            placeholder = painterResource(R.drawable.ic_launcher_background), // TODO("заменить дефолтную картинку")
-            error = painterResource(id = R.drawable.ic_launcher_background),
+            placeholder = painterResource(R.drawable.music_note), // TODO("заменить дефолтную картинку")
+            error = painterResource(id = R.drawable.music_note),
             modifier = Modifier
                 .padding(bottom = 30.dp)
                 .align(Alignment.CenterHorizontally)

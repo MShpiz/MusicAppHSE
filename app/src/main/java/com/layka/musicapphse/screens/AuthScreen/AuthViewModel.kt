@@ -1,6 +1,7 @@
 package com.layka.musicapphse.screens.AuthScreen
 
 import android.content.Context
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,25 +22,32 @@ class AuthViewModel @Inject constructor(
         email: String,
         password: String,
         username: String,
-        showToast: (String) -> Unit
+        showToast: (String) -> Unit,
+        isError: MutableState<Boolean>
     ) {
         viewModelScope.launch {
             authResult.value =
                 authService.register(email = email, password = password, username = username)
         }.invokeOnCompletion {
-            reactToResult(showToast)
+            reactToResult(showToast, isError)
         }
     }
 
-    fun login(email: String, password: String, showToast: (String) -> Unit) {
+    fun login(
+        email: String,
+        password: String,
+        showToast: (String) -> Unit,
+        isError: MutableState<Boolean>
+    ) {
         viewModelScope.launch {
             authResult.value = authService.login(email = email, password = password)
         }.invokeOnCompletion {
-            reactToResult(showToast)
+            reactToResult(showToast, isError)
         }
     }
 
-    private fun reactToResult(showToast: (String) -> Unit) {
+    private fun reactToResult(showToast: (String) -> Unit, isError: MutableState<Boolean>) {
+        isError.value = true
         showToast(
             when (authResult.value) {
                 AuthResult.OK -> "OK"

@@ -60,10 +60,6 @@ fun CollapsedState(
                 track = { currSliderState ->
                     val fraction = remember {
                         derivedStateOf {
-                            Log.d(
-                                "PLAYER_POSITION",
-                                currSliderState.valueRange.start.toString() + " " + currSliderState.valueRange.endInclusive + " " + currSliderState.value
-                            )
                             (currSliderState.value - currSliderState.valueRange.start) / (currSliderState.valueRange.endInclusive - currSliderState.valueRange.start)
                         }
                     }

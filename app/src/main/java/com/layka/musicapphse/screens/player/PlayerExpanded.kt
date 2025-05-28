@@ -106,7 +106,7 @@ fun PlayerExpanded(
                 modifier = Modifier.weight(7f)
             ) {
                 if (!showQueue.value) {
-                    PlayerView(playerModel, playerPosition, navController)
+                    PlayerView(playerModel, playerPosition, navController, collapsePlayer)
                 } else {
                     MusicQueue(playerModel = playerModel)
                 }
@@ -121,7 +121,8 @@ fun PlayerExpanded(
 private fun PlayerView(
     playerModel: PlayerModel,
     playerPosition: MutableState<Float>,
-    navController: NavController
+    navController: NavController,
+    collapsePlayer: () -> Unit
 ) {
     val context = LocalContext.current
     val interactionSource = remember {
@@ -169,7 +170,10 @@ private fun PlayerView(
                 )
             }
 
-            TextButton(onClick = { navController.navigate("artist/${playerModel.queueModel.currentTrack.value?.artists ?: ""}") }) {
+            TextButton(onClick = {
+                navController.navigate("artist/${playerModel.queueModel.currentTrack.value?.artists ?: ""}")
+                collapsePlayer()
+            }) {
                 Text(
                     text = playerModel.queueModel.currentTrack.value?.artists ?: "",
                     fontSize = 20.sp,
@@ -334,7 +338,7 @@ fun MusicQueue(playerModel: PlayerModel) {
         item {
             TrackList(
                 trackData = playerModel.queueModel.trackList.value, showCover = false,
-                navController = null, showMenuBtn = false, showArtistName = true
+                showArtistName = true, navController = null, showMenuBtn = false
             )
         }
     }

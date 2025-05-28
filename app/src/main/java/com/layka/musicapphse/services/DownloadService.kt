@@ -31,7 +31,7 @@ class DownloadService @Inject constructor(val repository: Repository, val tokenM
 
                 val inputStream = response.body?.byteStream()
 
-                val path = File(Environment.getExternalStorageDirectory().toString() + "/Music/Stuff")
+                val path = File(Environment.getExternalStorageDirectory().toString() + "/Music/SelfHosted")
                 if (!path.exists()) {
                     path.mkdirs()
                 }

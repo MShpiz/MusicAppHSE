@@ -11,7 +11,6 @@ class AuthService @Inject constructor(
     suspend fun register(email: String, password: String, username: String): AuthResult {
         try {
             val response = api.register(RegisterData(email, password, username))
-            Log.v("IS_AUTH", response.body().toString())
             return when (response.code()) {
                 201 -> login(email, password)
                 409 -> AuthResult.CONFLICT
@@ -30,11 +29,11 @@ class AuthService @Inject constructor(
     suspend fun login(email: String, password: String): AuthResult {
         try {
             val response = api.login(LoginData(email, password))
-            Log.v("IS_AUTH", response.body().toString())
             if (response.isSuccessful && response.body()?.data?.token != null) {
                 tokenManager.saveToken(response.body()!!.data.token)
             }
-            if (response.body()?.data?.token == null) return AuthResult.UNKNOWN
+            Log.d("IS_AUTH", response.toString())
+            // if (response.body()?.data?.token == null) return AuthResult.UNKNOWN
             return when (response.code()) {
                 200 -> AuthResult.OK
                 400 -> AuthResult.WRONG_EMAIL_PASSWORD

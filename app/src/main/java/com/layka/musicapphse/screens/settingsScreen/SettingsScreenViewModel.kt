@@ -29,7 +29,7 @@ class SettingsScreenViewModel @Inject constructor(
         }
     }
 
-    fun updateProfile(email: String, username: String) {
+    fun updateProfile(email: String, username: String, callBack: (String)->Unit) {
         val sentInfo = ProfileResponse.ProfileInfo(
             email = if (email.isNotBlank() && email != initialInfo.email) email else initialInfo.email,
             username = if (username.isNotBlank() && username != initialInfo.username) username else initialInfo.username,
@@ -37,6 +37,8 @@ class SettingsScreenViewModel @Inject constructor(
         )
         viewModelScope.launch {
             initialInfo = repository.updateProfile(sentInfo)
+        }.invokeOnCompletion {
+            callBack("Updated profile")
         }
     }
 

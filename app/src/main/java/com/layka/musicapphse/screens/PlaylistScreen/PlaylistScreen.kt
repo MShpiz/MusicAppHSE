@@ -81,6 +81,8 @@ fun PlaylistScreen(
         playlistScreenViewModel.playlistData
 
     }
+    val currModeState =
+        playlistScreenViewModel.tokenManager.getRepoType().collectAsState(initial = RepoType.HTTP)
     val gotData = remember {
         mutableStateOf(false)
     }
@@ -106,11 +108,11 @@ fun PlaylistScreen(
             showCover = false,
             showArtistName = false,
             navController = navController,
+            showCheckbox = isRemovingTracks.value,
             onChecked = { id, checked ->
                 playlistScreenViewModel.addTrack(id, checked)
             },
-            showCheckbox = isRemovingTracks.value,
-            enableClick = showEditScreen.value
+            enableClick = !showEditScreen.value
         )
     }
     val showScreenName = remember { mutableStateOf(false) }
@@ -231,9 +233,7 @@ fun PlaylistScreen(
                         ) {
                             Text(stringResource(id = R.string.update))
                         }
-                        if (playlistScreenViewModel.tokenManager.getToken()
-                                .collectAsState(initial = RepoType.LOCAL).value == RepoType.HTTP.toString()
-                        ) {
+                        if (currModeState.value == RepoType.HTTP.toString()) {
                             TextButton(
                                 onClick = {
                                     playlistScreenViewModel.deletePlaylist(playlistId)

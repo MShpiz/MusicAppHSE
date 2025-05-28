@@ -41,7 +41,8 @@ fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel 
             TopBar(
                 navController = navController,
                 showScreenName = remember { mutableStateOf(true) },
-                screenName = stringResource(id = R.string.search)
+                screenName = stringResource(id = R.string.search),
+                showBackArrow = false
             )
         },
         bottomBar = { BottomBar(navController = navController) }
@@ -82,16 +83,16 @@ fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel 
                     TrackList(
                         trackData = searchViewModel.foundTracks,
                         showCover = true,
-                        navController = navController,
-                        showArtistName = true
+                        showArtistName = true,
+                        navController = navController
                     )
                 }
             }
             TrackList(
                 trackData = searchViewModel.foundTracks,
                 showCover = true,
-                navController = navController,
-                showArtistName = true
+                showArtistName = true,
+                navController = navController
             )
         }
     }

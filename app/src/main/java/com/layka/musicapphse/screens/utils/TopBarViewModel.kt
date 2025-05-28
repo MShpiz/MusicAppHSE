@@ -30,7 +30,7 @@ class TopBarViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                creationResult = repository.createPlayList(name, description) == null
+                creationResult = repository.createPlayList(name, description) != null
             } catch (e: IllegalAccessException) {
                 isUnauthorised = true
             }

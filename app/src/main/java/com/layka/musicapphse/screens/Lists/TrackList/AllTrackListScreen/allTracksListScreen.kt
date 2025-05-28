@@ -37,7 +37,7 @@ fun AllTrackListScreen(
                 .padding(innerPadding)
         ) {
             TrackList(
-                trackData = viewModel.mutableStateList, showCover = true,
+                trackData = viewModel.mutableStateList, showCover = true, showArtistName = true,
                 navController = navController
             )
         }

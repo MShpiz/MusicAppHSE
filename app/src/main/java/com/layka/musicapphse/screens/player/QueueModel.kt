@@ -120,7 +120,7 @@ class QueueModel(
     }
 
     fun shuffle() {
-        player.pause()
+        // player.pause()
         val currPos = player.currentPosition
         if (!shuffleOn.value) {
             shuffleOn.value = true
@@ -144,7 +144,7 @@ class QueueModel(
             addMediaItemsToPlayer(trackList.value)
             player.seekTo(initialIdx, currPos)
         }
-        player.play()
+        // player.play()
         isPlaying.value = true
     }
 
